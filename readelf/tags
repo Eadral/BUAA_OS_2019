@@ -1,0 +1,106 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+CC	Makefile	/^CC        := gcc$/;"	m
+EI_MAG0	kerelf.h	84;"	d
+EI_MAG1	kerelf.h	87;"	d
+EI_MAG2	kerelf.h	90;"	d
+EI_MAG3	kerelf.h	93;"	d
+EI_NIDENT	kerelf.h	61;"	d
+ELFMAG0	kerelf.h	85;"	d
+ELFMAG1	kerelf.h	88;"	d
+ELFMAG2	kerelf.h	91;"	d
+ELFMAG3	kerelf.h	94;"	d
+Elf32_Addr	kerelf.h	/^typedef uint32_t Elf32_Addr;$/;"	t
+Elf32_Ehdr	kerelf.h	/^} Elf32_Ehdr;$/;"	t	typeref:struct:__anon1
+Elf32_Half	kerelf.h	/^typedef uint16_t Elf32_Half;$/;"	t
+Elf32_Off	kerelf.h	/^typedef uint32_t Elf32_Off;$/;"	t
+Elf32_Phdr	kerelf.h	/^} Elf32_Phdr;$/;"	t	typeref:struct:__anon3
+Elf32_Section	kerelf.h	/^typedef uint16_t Elf32_Section;$/;"	t
+Elf32_Shdr	kerelf.h	/^}Elf32_Shdr;$/;"	t	typeref:struct:__anon2
+Elf32_Sword	kerelf.h	/^typedef int32_t  Elf32_Sword;$/;"	t
+Elf32_Sxword	kerelf.h	/^typedef int64_t  Elf32_Sxword;$/;"	t
+Elf32_Symndx	kerelf.h	/^typedef uint32_t Elf32_Symndx;$/;"	t
+Elf32_Word	kerelf.h	/^typedef uint32_t Elf32_Word;$/;"	t
+Elf32_Xword	kerelf.h	/^typedef uint64_t Elf32_Xword;$/;"	t
+INCLUDES	Makefile	/^INCLUDES := -I.\/$/;"	m
+MIN	types.h	33;"	d
+NULL	types.h	8;"	d
+PF_MASKPROC	kerelf.h	146;"	d
+PF_R	kerelf.h	145;"	d
+PF_W	kerelf.h	144;"	d
+PF_X	kerelf.h	143;"	d
+PT_DYNAMIC	kerelf.h	130;"	d
+PT_HIOS	kerelf.h	137;"	d
+PT_HIPROC	kerelf.h	139;"	d
+PT_INTERP	kerelf.h	131;"	d
+PT_LOAD	kerelf.h	129;"	d
+PT_LOOS	kerelf.h	136;"	d
+PT_LOPROC	kerelf.h	138;"	d
+PT_NOTE	kerelf.h	132;"	d
+PT_NULL	kerelf.h	128;"	d
+PT_NUM	kerelf.h	135;"	d
+PT_PHDR	kerelf.h	134;"	d
+PT_SHLIB	kerelf.h	133;"	d
+ROUND	types.h	46;"	d
+ROUNDDOWN	types.h	47;"	d
+_INC_TYPES_H_	types.h	5;"	d
+_KER_ELF_H	kerelf.h	22;"	d
+e_ehsize	kerelf.h	/^        Elf32_Half      e_ehsize;               \/* ELF header size in bytes *\/$/;"	m	struct:__anon1
+e_entry	kerelf.h	/^        Elf32_Addr      e_entry;                \/* Entry point virtual address *\/$/;"	m	struct:__anon1
+e_flags	kerelf.h	/^        Elf32_Word      e_flags;                \/* Processor-specific flags *\/$/;"	m	struct:__anon1
+e_ident	kerelf.h	/^        unsigned char   e_ident[EI_NIDENT];     \/* Magic number and other info *\/$/;"	m	struct:__anon1
+e_machine	kerelf.h	/^        Elf32_Half      e_machine;              \/* Architecture *\/$/;"	m	struct:__anon1
+e_phentsize	kerelf.h	/^        Elf32_Half      e_phentsize;            \/* Program header table entry size *\/$/;"	m	struct:__anon1
+e_phnum	kerelf.h	/^        Elf32_Half      e_phnum;                \/* Program header table entry count *\/$/;"	m	struct:__anon1
+e_phoff	kerelf.h	/^        Elf32_Off       e_phoff;                \/* Program header table file offset *\/$/;"	m	struct:__anon1
+e_shentsize	kerelf.h	/^        Elf32_Half      e_shentsize;            \/* Section header table entry size *\/$/;"	m	struct:__anon1
+e_shnum	kerelf.h	/^        Elf32_Half      e_shnum;                \/* Section header table entry count *\/$/;"	m	struct:__anon1
+e_shoff	kerelf.h	/^        Elf32_Off       e_shoff;                \/* Section header table file offset *\/$/;"	m	struct:__anon1
+e_shstrndx	kerelf.h	/^        Elf32_Half      e_shstrndx;             \/* Section header string table index *\/$/;"	m	struct:__anon1
+e_type	kerelf.h	/^        Elf32_Half      e_type;                 \/* Object file type *\/$/;"	m	struct:__anon1
+e_version	kerelf.h	/^        Elf32_Word      e_version;              \/* Object file version *\/$/;"	m	struct:__anon1
+int16_t	types.h	/^typedef short                     int16_t;$/;"	t
+int32_t	types.h	/^typedef int                       int32_t;$/;"	t
+int64_t	types.h	/^typedef long long                 int64_t;$/;"	t
+is_elf_format	readelf.c	/^int is_elf_format(u_char *binary)$/;"	f
+main	main.c	/^int main(int argc,char *argv[])$/;"	f
+offsetof	types.h	43;"	d
+p_align	kerelf.h	/^        Elf32_Word      p_align;                \/* Segment alignment *\/$/;"	m	struct:__anon3
+p_filesz	kerelf.h	/^        Elf32_Word      p_filesz;               \/* Segment size in file *\/$/;"	m	struct:__anon3
+p_flags	kerelf.h	/^        Elf32_Word      p_flags;                \/* Segment flags *\/$/;"	m	struct:__anon3
+p_memsz	kerelf.h	/^        Elf32_Word      p_memsz;                \/* Segment size in memory *\/$/;"	m	struct:__anon3
+p_offset	kerelf.h	/^        Elf32_Off       p_offset;               \/* Segment file offset *\/$/;"	m	struct:__anon3
+p_paddr	kerelf.h	/^        Elf32_Addr      p_paddr;                \/* Segment physical address *\/$/;"	m	struct:__anon3
+p_type	kerelf.h	/^        Elf32_Word      p_type;                 \/* Segment type *\/$/;"	m	struct:__anon3
+p_vaddr	kerelf.h	/^        Elf32_Addr      p_vaddr;                \/* Segment virtual address *\/$/;"	m	struct:__anon3
+qaddr_t	types.h	/^typedef	quad_t *	qaddr_t;$/;"	t
+quad_t	types.h	/^typedef	int64_t		quad_t;$/;"	t
+readelf	readelf.c	/^int readelf(u_char *binary, int size)$/;"	f
+register_t	types.h	/^typedef int32_t                 register_t;$/;"	t
+sh_addr	kerelf.h	/^        Elf32_Addr sh_addr;                 \/* Section addr *\/$/;"	m	struct:__anon2
+sh_addralign	kerelf.h	/^        Elf32_Word sh_addralign;            \/* Section alignment *\/$/;"	m	struct:__anon2
+sh_entsize	kerelf.h	/^        Elf32_Word sh_entsize;              \/* Section entry size *\/$/;"	m	struct:__anon2
+sh_flags	kerelf.h	/^        Elf32_Word sh_flags;                \/* Section flags *\/$/;"	m	struct:__anon2
+sh_info	kerelf.h	/^        Elf32_Word sh_info;                 \/* Section extra info *\/$/;"	m	struct:__anon2
+sh_link	kerelf.h	/^        Elf32_Word sh_link;                 \/* Section link *\/$/;"	m	struct:__anon2
+sh_name	kerelf.h	/^        Elf32_Word sh_name;                 \/* Section name *\/$/;"	m	struct:__anon2
+sh_offset	kerelf.h	/^        Elf32_Off  sh_offset;               \/* Section offset *\/$/;"	m	struct:__anon2
+sh_size	kerelf.h	/^        Elf32_Word sh_size;                 \/* Section size *\/$/;"	m	struct:__anon2
+sh_type	kerelf.h	/^        Elf32_Word sh_type;                 \/* Section type *\/$/;"	m	struct:__anon2
+static_assert	types.h	41;"	d
+u_char	types.h	/^typedef	unsigned char	u_char;$/;"	t
+u_int	types.h	/^typedef	unsigned int	u_int;$/;"	t
+u_int16_t	types.h	/^typedef unsigned short          u_int16_t;$/;"	t
+u_int32_t	types.h	/^typedef unsigned int            u_int32_t;$/;"	t
+u_int64_t	types.h	/^typedef unsigned long long      u_int64_t;$/;"	t
+u_int8_t	types.h	/^typedef unsigned char            u_int8_t;$/;"	t
+u_long	types.h	/^typedef	unsigned long	u_long;$/;"	t
+u_quad_t	types.h	/^typedef	u_int64_t	u_quad_t;	\/* quads *\/$/;"	t
+u_short	types.h	/^typedef	unsigned short	u_short;$/;"	t
+uint16_t	kerelf.h	/^typedef u_int16_t               uint16_t;$/;"	t
+uint32_t	kerelf.h	/^typedef u_int32_t               uint32_t;$/;"	t
+uint64_t	kerelf.h	/^typedef u_int64_t               uint64_t;$/;"	t
