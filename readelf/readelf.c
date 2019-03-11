@@ -42,7 +42,7 @@ int is_elf_format(u_char *binary)
 int readelf(u_char *binary, int size)
 {
         Elf32_Ehdr *ehdr = (Elf32_Ehdr *)binary;
-
+            
         int Nr;
 
         Elf32_Shdr *shdr = NULL;
@@ -60,7 +60,23 @@ int readelf(u_char *binary, int size)
 
         // get section table addr, section header number and section header size.
 
+        Elf32_Addr sht_addr = binary + ehdr->e_shoff;
+        
+
+        Elf32_Half sht_size = ehdr->e_shentsize;
+        Elf32_Half sht_count = ehdr->e_shnum;
+        
+        
         // for each section header, output section number and section addr.
+        
+        int i;
+        for (i = 0; i < sht_size; i++) {
+            Elf32_Addr sh_addr = sht_addr + i * sht_size;
+
+            Elf32_Shdr* sh = (Elf32_Shdr *)sh_addr;
+
+            printf("%d:0x%x\n", i, sh->sh_addr);
+        }
 
 
         return 0;
