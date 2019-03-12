@@ -66,6 +66,11 @@ lp_Print(void (*output)(void *, char *, int),
     ladjust = 0; 
     padc = ' '; 
     prec = 0;
+
+    if (*fmt == '\0') {
+        return;
+    }
+
 	    /* scan for the next '%' */
     while (*fmt != '%') {
         buf[length++] = *fmt;
