@@ -64,7 +64,7 @@ lp_Print(void (*output)(void *, char *, int),
     longFlag = 0;
     width = 0;
     ladjust = 0; 
-    padc = ' '; // TODO
+    padc = ' '; 
     prec = 0;
 	    /* scan for the next '%' */
     while (*fmt != '%') {

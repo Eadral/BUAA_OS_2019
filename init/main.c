@@ -16,6 +16,14 @@ int main()
 {
     printf("panic");
 	printf("main.c:\tmain is start ...\n");
+    
+
+    printf("printf test...\n");
+    
+    printf("\n" );
+
+    printf("printf test end.\n");
+        
 
 	mips_init();
 	panic("main is over is error!");
