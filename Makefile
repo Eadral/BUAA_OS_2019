@@ -43,10 +43,10 @@ clean:
 		done; \
 	rm -rf *.o *~ $(vmlinux_elf)
 
-run:
+run: all
 	gxemul -E testmips -C R3000 -M 64 gxemul/vmlinux
 
-debug:
+debug: all
 	gxemul -E testmips -C R3000 -M 64 -V gxemul/vmlinux
 
 include include.mk
