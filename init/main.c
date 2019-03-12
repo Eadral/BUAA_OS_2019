@@ -14,7 +14,6 @@
 
 int main()
 {
-    printf("panic");
 	printf("main.c:\tmain is start ...\n");
 
 	mips_init();
