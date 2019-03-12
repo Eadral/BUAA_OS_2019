@@ -92,15 +92,16 @@ lp_Print(void (*output)(void *, char *, int),
     
 	/* we found a '%' */
 
-    if (*fmt == '-') {
-        ladjust = 1;
-        fmt++;
+    if (*fmt == '-' || *fmt == '0') {
+        if (*fmt == '-') {
+            ladjust = 1;
+            fmt++;
+        } else {
+            padc = '0';
+            fmt++;
+        }
     }
     
-    if (*fmt == '0') {
-        padc = '0';
-        fmt++;
-    }
 
     while (*fmt >= '0' && *fmt <= '9') {
         width *= 10;
