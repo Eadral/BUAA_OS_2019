@@ -70,7 +70,7 @@ int readelf(u_char *binary, int size)
         // for each section header, output section number and section addr.
         
         int i;
-        for (i = 0; i < sht_size; i++) {
+        for (i = 0; i < sht_count; i++) {
             Elf32_Addr sh_addr = sht_addr + i * sht_size;
 
             Elf32_Shdr* sh = (Elf32_Shdr *)sh_addr;
