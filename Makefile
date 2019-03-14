@@ -30,6 +30,7 @@ endif
 
 all: $(modules) vmlinux
 
+
 vmlinux: $(modules)
 	$(LD) -o $(vmlinux_elf) -N -T $(link_script) $(objects)
 
