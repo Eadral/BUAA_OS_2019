@@ -22,7 +22,7 @@ objects		  := $(boot_dir)/start.o			  \
 				 $(lib_dir)/*.o				  \
 				 $(mm_dir)/*.o
 
-.PHONY: all $(modules) clean
+.PHONY: all $(modules) clean run debug
 
 all: $(modules) vmlinux
 
@@ -38,5 +38,12 @@ clean:
 			$(MAKE) --directory=$$d clean; \
 		done; \
 	rm -rf *.o *~ $(vmlinux_elf)
+
+run: all
+	gxemul -E testmips -C R3000 -M 64 gxemul/vmlinux
+
+debug: all
+	gxemul -E testmips -C R3000 -M 64 -V gxemul/vmlinux
+
 
 include include.mk
