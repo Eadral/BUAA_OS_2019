@@ -74,7 +74,7 @@ int readelf(u_char *binary, int size)
         unsigned char *e_dient = binary;
         
         
-        int isBig = binary[5] == 2; 
+        int isBig = binary[5] != 1; 
         
         Elf32_Addr offset = ehdr->e_shoff;
         if (isBig) {
