@@ -39,6 +39,17 @@ int is_elf_format(u_char *binary)
  *   Return 0 if success. Otherwise return < 0.
  *   If success, output address of every section in ELF.
  */
+
+Elf32_Addr tr(Elf32_Addr addr);
+Elf32_Half trh(Elf32_Half addr) {
+    u_char *c = &addr;
+    c[0] ^= c[1];
+    c[1] ^= c[0];
+    c[0] ^= c[1];
+    return addr;
+    
+}
+
 int readelf(u_char *binary, int size)
 {
         Elf32_Ehdr *ehdr = (Elf32_Ehdr *)binary;
@@ -59,13 +70,25 @@ int readelf(u_char *binary, int size)
         }
 
         // get section table addr, section header number and section header size.
-
-        Elf32_Addr sht_addr = binary + ehdr->e_shoff;
         
-
-        Elf32_Half sht_size = ehdr->e_shentsize;
-        Elf32_Half sht_count = ehdr->e_shnum;
+        unsigned char *e_dient = binary;
         
+        
+        int isBig = binary[5] == 2; 
+        
+        Elf32_Addr offset = ehdr->e_shoff;
+        if (isBig) {
+            offset = tr(offset);
+        }
+         
+       
+        Elf32_Addr sht_addr = binary + offset;
+            
+
+        Elf32_Half sht_size = trh(ehdr->e_shentsize);
+        Elf32_Half sht_count = trh(ehdr->e_shnum);
+        
+        printf("%d %d \n", sht_size, sht_count);
         
         // for each section header, output section number and section addr.
         
@@ -75,10 +98,22 @@ int readelf(u_char *binary, int size)
 
             Elf32_Shdr* sh = (Elf32_Shdr *)sh_addr;
 
-            printf("%d:0x%x\n", i, sh->sh_addr);
+            printf("%d:0x%x\n", i, tr(sh->sh_addr));
         }
 
 
         return 0;
 }
 
+Elf32_Addr tr(Elf32_Addr addr) {
+    u_char *c = &addr;
+    c[0] ^= c[3];
+    c[3] ^= c[0];
+    c[0] ^= c[3];
+
+    c[1] ^= c[2];
+    c[2] ^= c[1];
+    c[1] ^= c[2];
+    
+    return addr;
+} 
