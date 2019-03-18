@@ -85,12 +85,16 @@ int readelf(u_char *binary, int size)
         Elf32_Addr sht_addr = binary + offset;
             
         
-        Elf32_Half sht_size = ehdr->e_shentsize;
-        Elf32_Half sht_count = ehdr->e_shnum;
+        Elf32_Half sht_size;
+        Elf32_Half sht_count;
         
         if (isBig) {
             sht_size = trh(ehdr->e_shentsize);
             sht_count = trh(ehdr->e_shnum);
+        
+        } else {
+            sht_size = ehdr->e_shentsize;
+            sht_count = ehdr->e_shnum;
         
         }
 
