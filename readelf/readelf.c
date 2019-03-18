@@ -84,11 +84,16 @@ int readelf(u_char *binary, int size)
        
         Elf32_Addr sht_addr = binary + offset;
             
-
-        Elf32_Half sht_size = trh(ehdr->e_shentsize);
-        Elf32_Half sht_count = trh(ehdr->e_shnum);
         
-        printf("%d %d \n", sht_size, sht_count);
+        Elf32_Half sht_size = ehdr->e_shentsize;
+        Elf32_Half sht_count = ehdr->e_shnum;
+        
+        if (isBig) {
+            sht_size = trh(ehdr->e_shentsize);
+            sht_count = trh(ehdr->e_shnum);
+        
+        }
+
         
         // for each section header, output section number and section addr.
         
@@ -97,8 +102,11 @@ int readelf(u_char *binary, int size)
             Elf32_Addr sh_addr = sht_addr + i * sht_size;
 
             Elf32_Shdr* sh = (Elf32_Shdr *)sh_addr;
-
+            if (isBig) {
+                
             printf("%d:0x%x\n", i, tr(sh->sh_addr));
+            } else
+            printf("%d:0x%x\n", i, sh->sh_addr);
         }
 
 
