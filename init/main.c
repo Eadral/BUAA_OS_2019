@@ -20,7 +20,9 @@ int main()
     printf("printf test...\n");
     
     printf("%%\n" );
-
+    
+    printf("%d\n", 123);
+    
     printf("printf test end.\n");
         
 
