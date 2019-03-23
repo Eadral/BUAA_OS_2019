@@ -21,7 +21,7 @@ int main()
     
     printf("%%\n" );
     
-    printf("%d\n", 123);
+    printf("%x\n", -123);
     
     printf("printf test end.\n");
         
