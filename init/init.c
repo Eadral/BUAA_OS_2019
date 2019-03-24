@@ -10,11 +10,12 @@ void mips_init()
 
 	// Lab 2 memory management initialization functions
 	mips_detect_memory();
+    //printf("%x\n", maxpa);
 	mips_vm_init();
 	page_init();
 
 	physical_memory_manage_check();
-        page_check();
+    //    page_check();
 
 	panic("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 
