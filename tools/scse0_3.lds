@@ -17,6 +17,6 @@ SECTIONS
     .text : { *(.text) }
     .data : { *(.data) }
     .bss : { *(.bss) }
-    
+    .sdata : { *(.sdata) }  
 end = . ;
 }

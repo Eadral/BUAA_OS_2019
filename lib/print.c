@@ -126,7 +126,6 @@ lp_Print(void (*output)(void *, char *, int),
 	/* check for other prefixes */
 
 	/* check format flag */
-	negFlag = 0;
 	switch (*fmt) {
 	 case 'b':
 	    if (longFlag) { 
@@ -134,7 +133,12 @@ lp_Print(void (*output)(void *, char *, int),
 	    } else { 
 		num = va_arg(ap, int);
 	    }
-	    length = PrintNum(buf, num, 2, 0, width, ladjust, padc, 0);
+	    negFlag = 0;
+        if (num < 0) {
+            num = -num;
+            negFlag = 1;
+        }
+	    length = PrintNum(buf, num, 2, negFlag, width, ladjust, padc, 0);
 	    OUTPUT(arg, buf, length);
 	    break;
 
@@ -145,10 +149,11 @@ lp_Print(void (*output)(void *, char *, int),
 	    } else { 
 		num = va_arg(ap, int); 
 	    }
-	    if (num < 0) {
-		num = - num;
-		negFlag = 1;
-	    }
+	    negFlag = 0;
+        if (num < 0) {
+            num = -num;
+            negFlag = 1;
+        }
 	    length = PrintNum(buf, num, 10, negFlag, width, ladjust, padc, 0);
 	    OUTPUT(arg, buf, length);
 	    break;
@@ -160,7 +165,12 @@ lp_Print(void (*output)(void *, char *, int),
 	    } else { 
 		num = va_arg(ap, int); 
 	    }
-	    length = PrintNum(buf, num, 8, 0, width, ladjust, padc, 0);
+	    negFlag = 0;
+        if (num < 0) {
+            num = -num;
+            negFlag = 1;
+        }
+	    length = PrintNum(buf, num, 8, negFlag, width, ladjust, padc, 0);
 	    OUTPUT(arg, buf, length);
 	    break;
 
@@ -171,7 +181,12 @@ lp_Print(void (*output)(void *, char *, int),
 	    } else { 
 		num = va_arg(ap, int); 
 	    }
-	    length = PrintNum(buf, num, 10, 0, width, ladjust, padc, 0);
+	    negFlag = 0;
+        if (num < 0) {
+            num = -num;
+            negFlag = 1;
+        }
+	    length = PrintNum(buf, num, 10, negFlag, width, ladjust, padc, 0);
 	    OUTPUT(arg, buf, length);
 	    break;
 	    
@@ -181,7 +196,12 @@ lp_Print(void (*output)(void *, char *, int),
 	    } else { 
 		num = va_arg(ap, int); 
 	    }
-	    length = PrintNum(buf, num, 16, 0, width, ladjust, padc, 0);
+	    negFlag = 0;
+        if (num < 0) {
+            num = -num;
+            negFlag = 1;
+        }
+	    length = PrintNum(buf, num, 16, negFlag, width, ladjust, padc, 0);
 	    OUTPUT(arg, buf, length);
 	    break;
 
@@ -191,7 +211,12 @@ lp_Print(void (*output)(void *, char *, int),
 	    } else { 
 		num = va_arg(ap, int); 
 	    }
-	    length = PrintNum(buf, num, 16, 0, width, ladjust, padc, 1);
+	    negFlag = 0;
+        if (num < 0) {
+            num = -num;
+            negFlag = 1;
+        }
+	    length = PrintNum(buf, num, 16, negFlag, width, ladjust, padc, 1);
 	    OUTPUT(arg, buf, length);
 	    break;
 

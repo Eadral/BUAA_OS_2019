@@ -20,9 +20,14 @@ int main()
     printf("printf test...\n");
     
     printf("%%\n" );
-    
-    printf("%x\n", -123);
-    
+    printf("%b %b\n", 123, -123); 
+    printf("%d %D\n", 123, -123);
+    printf("%o %O\n", 123, -123);
+    printf("%x %X\n", 123, -123);
+    printf("%c %c\n", 'x', '@');
+    printf("%s\n", "Hello World!");
+
+
     printf("printf test end.\n");
         
 
