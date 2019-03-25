@@ -54,7 +54,6 @@ calculator:
             j echo
             nop
         cd:
-
             xor s7, s7, 1
             j echo
             nop
