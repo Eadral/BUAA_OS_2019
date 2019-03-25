@@ -362,13 +362,19 @@ page_insert(Pde *pgdir, struct Page *pp, u_long va, u_int perm)
     /* Step 2: Update TLB. */
 
     /* hint: use tlb_invalidate function */
-
+    tlb_invalidate(pgdir, va);
 
     /* Step 3: Do check, re-get page table entry to validate the insertion. */
-
+    
     /* Step 3.1 Check if the page can be insert, if can’t return -E_NO_MEM */
 
+    if (pgdir_walk(pgdir, va, 0, &pgtable_entry) != 0) {
+        return -E_NO_MEM;
+    }
     /* Step 3.2 Insert page and increment the pp_ref */
+   
+    *pgtable_entry = (page2pa(pp) | PERM);
+    pp->pp_ref++;
 
     return 0;
 }
