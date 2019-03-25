@@ -66,8 +66,18 @@ calculator:
             move s5, t0
             lw t1, dig2
             move s6, t1
-            addu t3, t0, t1
             
+            lw t7, sign
+            bne t7, 45, not_minus
+            nop
+            subu t3, t0, t1
+            j is_minus
+            nop
+            not_minus:
+            addu t3, t0, t1
+            is_minus:
+
+
             li t0, 10
             divu t3, t0
             mflo t3
