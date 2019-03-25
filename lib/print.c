@@ -28,6 +28,7 @@ static const char theFatalMsg[] = "fatal error in lp_Print!";
  */
 void
 lp_Print(void (*output)(void *, char *, int), 
+        }
 	 void * arg,
 	 char *fmt, 
 	 va_list ap)
@@ -138,7 +139,7 @@ lp_Print(void (*output)(void *, char *, int),
             num = -num;
             negFlag = 1;
         }
-	    length = PrintNum(buf, num, 2, negFlag, width, ladjust, padc, 0);
+	    length = PrintNum(buf, num, 2, 0, width, ladjust, padc, 0);
 	    OUTPUT(arg, buf, length);
 	    break;
 
@@ -170,7 +171,7 @@ lp_Print(void (*output)(void *, char *, int),
             num = -num;
             negFlag = 1;
         }
-	    length = PrintNum(buf, num, 8, negFlag, width, ladjust, padc, 0);
+	    length = PrintNum(buf, num, 8, 0, width, ladjust, padc, 0);
 	    OUTPUT(arg, buf, length);
 	    break;
 
@@ -186,7 +187,7 @@ lp_Print(void (*output)(void *, char *, int),
             num = -num;
             negFlag = 1;
         }
-	    length = PrintNum(buf, num, 10, negFlag, width, ladjust, padc, 0);
+	    length = PrintNum(buf, num, 10, 0, width, ladjust, padc, 0);
 	    OUTPUT(arg, buf, length);
 	    break;
 	    
@@ -201,7 +202,7 @@ lp_Print(void (*output)(void *, char *, int),
             num = -num;
             negFlag = 1;
         }
-	    length = PrintNum(buf, num, 16, negFlag, width, ladjust, padc, 0);
+	    length = PrintNum(buf, num, 16, 0, width, ladjust, padc, 0);
 	    OUTPUT(arg, buf, length);
 	    break;
 
@@ -216,7 +217,7 @@ lp_Print(void (*output)(void *, char *, int),
             num = -num;
             negFlag = 1;
         }
-	    length = PrintNum(buf, num, 16, negFlag, width, ladjust, padc, 1);
+	    length = PrintNum(buf, num, 16, 0, width, ladjust, padc, 1);
 	    OUTPUT(arg, buf, length);
 	    break;
 
