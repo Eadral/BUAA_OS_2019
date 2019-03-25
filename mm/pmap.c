@@ -95,7 +95,7 @@ static Pte *boot_pgdir_walk(Pde *pgdir, u_long va, int create)
      * entry value. */
     pgdir_entryp = pgdir + PDX(va);
     if (*pgdir_entryp & PTE_V) {
-        pgtable = KADDR(PTE_ADDR(*pgdir_entryp));
+        pgtable = (Pte *)KADDR(PTE_ADDR(*pgdir_entryp));
     } 
         
     
@@ -139,10 +139,11 @@ void boot_map_segment(Pde *pgdir, u_long va, u_long size, u_long pa, int perm)
 
     int n = size / BY2PG;
     for (i = 0; i < n; i++) {
-        pgtable_entry = boot_pgdir_walk(pgdir, va, 1);
+        va_temp = va + i * BY2PG;
+        pgtable_entry = boot_pgdir_walk(pgdir, va_temp, 1);
         *pgtable_entry = (pa + i * BY2PG) | perm | PTE_V;
     }
-
+    *(pgdir + PDX(va)) |= perm | PTE_V;
 }
 
 /* Overview:
@@ -193,7 +194,6 @@ void mips_vm_init()
 void
 page_init(void)
 {
-    extern char end[];
     /* Step 1: Initialize page_free_list. */
     /* Hint: Use macro `LIST_INIT` defined in include/queue.h. */
     LIST_INIT(&page_free_list);
@@ -207,7 +207,7 @@ page_init(void)
     u_long i;
     for (i = 0; i < npage; i++) {
         apage = &pages[i];        
-        if ((u_long)end + page2pa(apage) < freemem) {
+        if (ULIM + page2pa(apage) < freemem) {
             apage->pp_ref = 1; 
         } else {
             apage->pp_ref = 0;
@@ -303,8 +303,10 @@ pgdir_walk(Pde *pgdir, u_long va, int create, Pte **ppte)
 
     /* Step 1: Get the corresponding page directory entry and page table. */
     pgdir_entryp = pgdir + PDX(va);
+    printf("\0");
     if (*pgdir_entryp & PTE_V) {
-        pgtable = KADDR(PTE_ADDR(*pgdir_entryp));
+        //printf("%x\n", *pgdir_entryp & PTE_V);
+        pgtable = (Pte *)KADDR(PTE_ADDR(*pgdir_entryp));
     }
 
     /* Step 2: If the corresponding page table is not exist(valid) and parameter `create`
@@ -313,9 +315,12 @@ pgdir_walk(Pde *pgdir, u_long va, int create, Pte **ppte)
      * When creating new page table, maybe out of memory. */
     else if (create == 1) {
         if (page_alloc(&ppage) == 0) {
+            //`printf("$$$\n");
             pgtable = page2kva(ppage);
-            *pgdir_entryp = PADDR(pgtable) | PTE_V;
+            *pgdir_entryp = (Pde *)(PADDR(pgtable) | PTE_R | PTE_V);
+            ppage->pp_ref++;
         } else {
+            *ppte = 0;
             return -E_NO_MEM;
         }
     } else {
@@ -368,12 +373,12 @@ page_insert(Pde *pgdir, struct Page *pp, u_long va, u_int perm)
     
     /* Step 3.1 Check if the page can be insert, if can’t return -E_NO_MEM */
 
-    if (pgdir_walk(pgdir, va, 0, &pgtable_entry) != 0) {
+    if (pgdir_walk(pgdir, va, 1, &pgtable_entry) != 0) {
         return -E_NO_MEM;
     }
     /* Step 3.2 Insert page and increment the pp_ref */
    
-    *pgtable_entry = (page2pa(pp) | PERM);
+    *pgtable_entry = page2pa(pp) | PERM;
     pp->pp_ref++;
 
     return 0;
@@ -613,7 +618,7 @@ page_check(void)
     // pp2 should NOT be on the free list
     // could happen in ref counts are handled sloppily in page_insert
     assert(page_alloc(&pp) == -E_NO_MEM);
-
+    //printf("@@@620\n");
     // should not be able to map at PDMAP because need free page for page table
     assert(page_insert(boot_pgdir, pp0, PDMAP, 0) < 0);
 
