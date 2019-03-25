@@ -28,7 +28,6 @@ static const char theFatalMsg[] = "fatal error in lp_Print!";
  */
 void
 lp_Print(void (*output)(void *, char *, int), 
-        }
 	 void * arg,
 	 char *fmt, 
 	 va_list ap)
