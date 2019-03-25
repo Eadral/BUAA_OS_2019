@@ -173,10 +173,6 @@ lp_Print(void (*output)(void *, char *, int),
 		num = va_arg(ap, int);
 	    }
 	    negFlag = 0;
-        if (num < 0) {
-            num = -num;
-            negFlag = 1;
-        }
 	    length = PrintNum(buf, num, 2, 0, width, ladjust, padc, 0);
 	    OUTPUT(arg, buf, length);
 	    break;
@@ -205,10 +201,6 @@ lp_Print(void (*output)(void *, char *, int),
 		num = va_arg(ap, int); 
 	    }
 	    negFlag = 0;
-        if (num < 0) {
-            num = -num;
-            negFlag = 1;
-        }
 	    length = PrintNum(buf, num, 8, 0, width, ladjust, padc, 0);
 	    OUTPUT(arg, buf, length);
 	    break;
@@ -221,10 +213,6 @@ lp_Print(void (*output)(void *, char *, int),
 		num = va_arg(ap, int); 
 	    }
 	    negFlag = 0;
-        if (num < 0) {
-            num = -num;
-            negFlag = 1;
-        }
 	    length = PrintNum(buf, num, 10, 0, width, ladjust, padc, 0);
 	    OUTPUT(arg, buf, length);
 	    break;
@@ -236,10 +224,6 @@ lp_Print(void (*output)(void *, char *, int),
 		num = va_arg(ap, int); 
 	    }
 	    negFlag = 0;
-        if (num < 0) {
-            num = -num;
-            negFlag = 1;
-        }
 	    length = PrintNum(buf, num, 16, 0, width, ladjust, padc, 0);
 	    OUTPUT(arg, buf, length);
 	    break;
@@ -251,10 +235,6 @@ lp_Print(void (*output)(void *, char *, int),
 		num = va_arg(ap, int); 
 	    }
 	    negFlag = 0;
-        if (num < 0) {
-            num = -num;
-            negFlag = 1;
-        }
 	    length = PrintNum(buf, num, 16, 0, width, ladjust, padc, 1);
 	    OUTPUT(arg, buf, length);
 	    break;
