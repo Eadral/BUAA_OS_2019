@@ -11,21 +11,13 @@
 
 #include <printf.h>
 #include <pmap.h>
+#include <calculator.h>
 
 int main()
 {
 	printf("main.c:\tmain is start ...\n");
     
-
-    printf("printf test...\n");
-    
-    printf("%%\n" );
-    printf("%b %b\n", 123, -123); 
-    printf("%d %D\n", 123, -123);
-    printf("%o %O\n", 123, -123);
-    printf("%x %X\n", 123, -123);
-    printf("%c %c\n", 'x', '@');
-    printf("%s\n", "Hello World!");
+    calculator();
 
 
     printf("printf test end.\n");
