@@ -53,7 +53,8 @@ lp_Print(void (*output)(void *, char *, int),
     int prec;
     int ladjust;
     char padc;
-
+    int sharp;
+    int arraysize;
     int length;
 
     for(;;) {
@@ -66,6 +67,8 @@ lp_Print(void (*output)(void *, char *, int),
     ladjust = 0; 
     padc = ' '; 
     prec = 0;
+    sharp = 0;
+    arraysize = 0;
 
     if (*fmt == '\0') {
         return;
@@ -113,10 +116,20 @@ lp_Print(void (*output)(void *, char *, int),
         fmt++;
         while (*fmt >= '0' && *fmt <= '9') {
             prec *= 10;
-            prec += prec - '0';
+            prec += *fmt - '0';
         }
     }
     
+    if (*fmt == '#') {
+        fmt++;
+        while (*fmt >= '0' && *fmt <= '9') {
+            arraysize *= 10;
+            arraysize += *fmt - '0';
+            fmt++;
+        }
+        
+    }
+
 	/* check for long */
     if (*fmt == 'l') {
         longFlag = 1;
@@ -124,9 +137,35 @@ lp_Print(void (*output)(void *, char *, int),
     }
 
 	/* check for other prefixes */
-
+    int j;
+    long int *arr;
 	/* check format flag */
 	switch (*fmt) {
+     case 'a':
+     case 'A':
+         
+        if (longFlag) {
+            arr = (long int*)va_arg(ap, long int *);
+        } else {
+            arr = (long int*)va_arg(ap, int*);
+        }
+        OUTPUT(arg, "{", 1);
+    for (j = 0; j < arraysize; j++) {
+        num = arr[j];
+	    negFlag = 0;
+        if (num < 0) {
+            num = -num;
+            negFlag = 1;
+        }
+	    length = PrintNum(buf, num, 10, negFlag, width, ladjust, padc, 0);
+	    OUTPUT(arg, buf, length);
+        if (j < arraysize - 1) 
+            OUTPUT(arg, ",", 1);
+    }
+        OUTPUT(arg, "}", 1);
+	    break;
+
+
 	 case 'b':
 	    if (longFlag) { 
 		num = va_arg(ap, long int); 
