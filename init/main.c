@@ -1,5 +1,4 @@
-
-#pragma GCC optimize(O0)
+#pragma GCC optimize("O0")
 
 /*
  * Copyright (C) 2001 MontaVista Software Inc.

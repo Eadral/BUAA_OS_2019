@@ -37,13 +37,13 @@ clean:
 		do					\
 			$(MAKE) --directory=$$d clean; \
 		done; \
-	rm -rf *.o *~ $(vmlinux_elf)
+	rm -rf *.ss *.o *~ $(vmlinux_elf)
 
 run: all
 	gxemul -E testmips -C R3000 -M 64 gxemul/vmlinux
 
 debug: all
-	gxemul -E testmips -C R3000 -M 64 -V gxemul/vmlinux
+	gxemul -E testmips -C R3000 -M 64 -V -i -t gxemul/vmlinux
 
 
 include include.mk

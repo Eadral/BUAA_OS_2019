@@ -1,0 +1,82 @@
+--- pmap.ss	2019-03-27 16:03:04.500000000 +0800
++++ pmap_.ss	2019-03-27 16:02:08.200000000 +0800
+@@ -714,25 +714,30 @@
+ 	.ent	pgdir_walk
+ 	.type	pgdir_walk, @function
+ pgdir_walk:
+-	.frame	$sp,40,$31		# vars= 8, regs= 4/0, args= 16, gp= 0
+-	.mask	0x80070000,-4
++	.frame	$sp,48,$31		# vars= 8, regs= 5/0, args= 16, gp= 0
++	.mask	0x800f0000,-8
+ 	.fmask	0x00000000,0
+ 	.set	noreorder
+ 	.set	nomacro
+ 	
+-	addiu	$sp,$sp,-40
+-	sw	$31,36($sp)
++	addiu	$sp,$sp,-48
++	sw	$31,40($sp)
++	sw	$19,36($sp)
+ 	sw	$18,32($sp)
+ 	sw	$17,28($sp)
+ 	sw	$16,24($sp)
+-	move	$18,$7
++	move	$18,$5
++	move	$16,$6
++	move	$19,$7
+ 	srl	$2,$5,22
+ 	sll	$2,$2,2
+-	addu	$16,$2,$4
+-	lw	$7,0($16)
++	jal	nothing
++	addu	$17,$2,$4
++
++	lw	$7,0($17)
+ 	andi	$2,$7,0x200
+ 	beq	$2,$0,$L74
+-	move	$17,$5
++	li	$2,1			# 0x1
+ 
+ 	li	$2,-4096			# 0xfffffffffffff000
+ 	and	$7,$7,$2
+@@ -755,8 +760,7 @@
+ 	addu	$7,$7,$2
+ 
+ $L74:
+-	li	$2,1			# 0x1
+-	bne	$6,$2,$L81
++	bne	$16,$2,$L81
+ 	move	$2,$0
+ 
+ 	jal	page_alloc
+@@ -812,24 +816,25 @@
+ $L86:
+ 	addu	$2,$7,$2
+ 	ori	$2,$2,0x600
+-	sw	$2,0($16)
++	sw	$2,0($17)
+ 	lw	$3,16($sp)
+ 	lhu	$2,8($3)
+ 	addiu	$2,$2,1
+ 	sh	$2,8($3)
+ $L78:
+-	srl	$2,$17,10
++	srl	$2,$18,10
+ 	andi	$2,$2,0xffc
+ 	addu	$2,$7,$2
+-	sw	$2,0($18)
++	sw	$2,0($19)
+ 	move	$2,$0
+ $L81:
+-	lw	$31,36($sp)
++	lw	$31,40($sp)
++	lw	$19,36($sp)
+ 	lw	$18,32($sp)
+ 	lw	$17,28($sp)
+ 	lw	$16,24($sp)
+ 	j	$31
+-	addiu	$sp,$sp,40
++	addiu	$sp,$sp,48
+ 
+ 	.set	macro
+ 	.set	reorder

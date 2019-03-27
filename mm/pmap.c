@@ -1,11 +1,10 @@
-#pragma GCC optimize(O0)
+
 
 #include "mmu.h"
 #include "pmap.h"
 #include "printf.h"
 #include "env.h"
 #include "error.h"
-
 
 /* These variables are set by mips_detect_memory() */
 u_long maxpa;            /* Maximum physical address */
@@ -50,7 +49,6 @@ static void *alloc(u_int n, u_int align, int clear)
 {
     extern char end[];
     u_long alloced_mem;
-
     /* Initialize `freemem` if this is the first time. The first virtual address that the
      * linker did *not* assign to any kernel code or global variables. */
     if (freemem == 0) {
@@ -59,7 +57,6 @@ static void *alloc(u_int n, u_int align, int clear)
 
     /* Step 1: Round up `freemem` up to be aligned properly */
     freemem = ROUND(freemem, align);
-
     /* Step 2: Save current value of `freemem` as allocated chunk. */
     alloced_mem = freemem;
 
@@ -108,7 +105,7 @@ static Pte *boot_pgdir_walk(Pde *pgdir, u_long va, int create)
     else if (create == 1) {
         pgtable = alloc(BY2PG, BY2PG, 1);
         *pgdir_entryp = PADDR(pgtable) | PTE_V;
-    
+         
     } else {
         panic("boot_pgdir_failed");
     }
@@ -139,13 +136,12 @@ void boot_map_segment(Pde *pgdir, u_long va, u_long size, u_long pa, int perm)
     /* Step 2: Map virtual address space to physical address. */
     /* Hint: Use `boot_pgdir_walk` to get the page table entry of virtual address `va`. */
 
-    int n = size / BY2PG;
-    for (i = 0; i < n; i++) {
-        va_temp = va + i * BY2PG;
+    for (i = 0; i < size; i += BY2PG) {
+        va_temp = va + i;
         pgtable_entry = boot_pgdir_walk(pgdir, va_temp, 1);
-        *pgtable_entry = (pa + i * BY2PG) | perm | PTE_V;
+        *pgtable_entry = (pa + i) | perm | PTE_V;
     }
-    *(pgdir + PDX(va)) |= perm | PTE_V;
+
 }
 
 /* Overview:
@@ -173,6 +169,7 @@ void mips_vm_init()
      * for physical memory management. Then, map virtual address `UPAGES` to
      * physical address `pages` allocated before. For consideration of alignment,
      * you should round up the memory size before map. */
+
     pages = (struct Page *)alloc(npage * sizeof(struct Page), BY2PG, 1);
     printf("to memory %x for struct Pages.\n", freemem);
     n = ROUND(npage * sizeof(struct Page), BY2PG);
@@ -297,9 +294,6 @@ page_free(struct Page *pp)
 	whether this function execute successfully or not.
     This function have something in common with function `boot_pgdir_walk`.*/
 
-void nothing() {
-    return;
-}
     
 int
 pgdir_walk(Pde *pgdir, u_long va, int create, Pte **ppte)
@@ -310,7 +304,7 @@ pgdir_walk(Pde *pgdir, u_long va, int create, Pte **ppte)
 
     /* Step 1: Get the corresponding page directory entry and page table. */
     pgdir_entryp = pgdir + PDX(va);
-    nothing();
+    //nothing();
     if (*pgdir_entryp & PTE_V) {
         //printf("%x\n", *pgdir_entryp & PTE_V);
         pgtable = (Pte *)KADDR(PTE_ADDR(*pgdir_entryp));
@@ -324,13 +318,14 @@ pgdir_walk(Pde *pgdir, u_long va, int create, Pte **ppte)
         if (page_alloc(&ppage) == 0) {
             //`printf("$$$\n");
             pgtable = page2kva(ppage);
-            *pgdir_entryp = (Pde *)(PADDR(pgtable) | PTE_R | PTE_V);
+            *pgdir_entryp = PADDR(pgtable) | PTE_R | PTE_V;
             ppage->pp_ref++;
         } else {
-            *ppte = 0;
+            //*ppte = 0;
             return -E_NO_MEM;
         }
     } else {
+        *ppte = 0;
         return 0;
     }
 
