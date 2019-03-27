@@ -1,3 +1,5 @@
+#pragma GCC optimize(O0)
+
 #include "mmu.h"
 #include "pmap.h"
 #include "printf.h"
@@ -294,6 +296,11 @@ page_free(struct Page *pp)
 	We use a two-level pointer to store page table entry and return a state code to indicate
 	whether this function execute successfully or not.
     This function have something in common with function `boot_pgdir_walk`.*/
+
+void nothing() {
+    return;
+}
+    
 int
 pgdir_walk(Pde *pgdir, u_long va, int create, Pte **ppte)
 {
@@ -303,7 +310,7 @@ pgdir_walk(Pde *pgdir, u_long va, int create, Pte **ppte)
 
     /* Step 1: Get the corresponding page directory entry and page table. */
     pgdir_entryp = pgdir + PDX(va);
-    printf("\0");
+    nothing();
     if (*pgdir_entryp & PTE_V) {
         //printf("%x\n", *pgdir_entryp & PTE_V);
         pgtable = (Pte *)KADDR(PTE_ADDR(*pgdir_entryp));

@@ -1,3 +1,6 @@
+
+#pragma GCC optimize(O0)
+
 #include <asm/asm.h>
 #include <pmap.h>
 #include <env.h>

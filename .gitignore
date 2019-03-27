@@ -2,3 +2,7 @@
 *.swn
 *.swo
 *.swm
+
+
+*.o
+*.ss
