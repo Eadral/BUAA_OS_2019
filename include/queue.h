@@ -158,6 +158,7 @@
             typeof(LIST_FIRST(head)) t_page = LIST_FIRST(head); \
             if (t_page == NULL) {   \
                 LIST_FIRST(head) = elm;  \
+                (elm)->field.le_prev = &LIST_FIRST((head));   \
                 break;  \
             }   \
             while (LIST_NEXT((t_page), field) != NULL) t_page = LIST_NEXT((t_page), field);  \

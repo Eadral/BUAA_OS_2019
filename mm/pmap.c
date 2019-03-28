@@ -321,7 +321,7 @@ pgdir_walk(Pde *pgdir, u_long va, int create, Pte **ppte)
             *pgdir_entryp = PADDR(pgtable) | PTE_R | PTE_V;
             ppage->pp_ref++;
         } else {
-            //*ppte = 0;
+            *ppte = 0;
             return -E_NO_MEM;
         }
     } else {
@@ -350,7 +350,7 @@ int
 page_insert(Pde *pgdir, struct Page *pp, u_long va, u_int perm)
 {
     u_int PERM;
-    Pte *pgtable_entry;
+    Pte *pgtable_entry = 0;
     PERM = perm | PTE_V;
 
     /* Step 1: Get corresponding page table entry. */

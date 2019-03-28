@@ -7,8 +7,8 @@ INCLUDES	:= -I./ -I../ -I../include/
 	$(CC) $(CFLAGS) $(INCLUDES) -c $<
 
 %.ss: %.c
-	# $(CC) $(CFLAGS) $(INCLUDES) -c -g -Wa,-adlhn $< > $@
-	$(CC) $(CFLAGS) $(INCLUDES) -S $< 
+	$(CC) $(CFLAGS) $(INCLUDES) -c -g -Wa,-adlhn $< > $@
+	# $(CC) $(CFLAGS) $(INCLUDES) -S $< 
 	
 .PHONY: clean
 
