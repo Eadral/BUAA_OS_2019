@@ -226,13 +226,15 @@ LIST_INSERT_AFTER	include/queue.h	114;"	d
 LIST_INSERT_BEFORE	include/queue.h	134;"	d
 LIST_INSERT_HEAD	include/queue.h	145;"	d
 LIST_INSERT_TAIL	include/queue.h	157;"	d
-LIST_INSERT_TAIL_ELM	include/queue.h	163;"	d
-LIST_NEXT	include/queue.h	173;"	d
-LIST_REMOVE	include/queue.h	179;"	d
+LIST_NEXT	include/queue.h	171;"	d
+LIST_REMOVE	include/queue.h	177;"	d
 LOG2NENV	include/env.h	11;"	d
 LP_MAX_BUF	include/print.h	18;"	d
 MAXERROR	include/error.h	24;"	d
 MAXERROR	include/mmu.h	125;"	d
+MEOW	include/meow.h	16;"	d
+MEOW	include/meow.h	18;"	d
+MEOW_ON	include/meow.h	13;"	d
 MIN	include/types.h	33;"	d
 MIN	readelf/types.h	33;"	d
 NENV	include/env.h	12;"	d
@@ -255,6 +257,8 @@ PF_X	readelf/kerelf.h	143;"	d
 PGSHIFT	include/mmu.h	18;"	d
 PHYSADDR_OFFSET	drivers/gxconsole/console.c	13;"	d	file:
 PPN	include/mmu.h	25;"	d
+PRINTD	include/meow.h	9;"	d
+PRINTX	include/meow.h	8;"	d
 PTE2PT	include/mmu.h	29;"	d
 PTE_ADDR	include/mmu.h	22;"	d
 PTE_COW	include/mmu.h	39;"	d
@@ -293,6 +297,7 @@ SAVE_ALL	lib/genex.S	/^SAVE_ALL$/;"	l
 STATUSF_IP4	include/asm/cp0regdef.h	40;"	d
 STATUS_CU0	include/asm/cp0regdef.h	41;"	d
 STATUS_KUC	include/asm/cp0regdef.h	42;"	d
+STOP	include/meow.h	10;"	d
 SYS_cgetc	include/unistd.h	22;"	d
 SYS_env_alloc	include/unistd.h	16;"	d
 SYS_env_destroy	include/unistd.h	11;"	d
@@ -308,8 +313,8 @@ SYS_set_env_status	include/unistd.h	17;"	d
 SYS_set_pgfault_handler	include/unistd.h	12;"	d
 SYS_set_trapframe	include/unistd.h	18;"	d
 SYS_yield	include/unistd.h	10;"	d
-TAILQ_ENTRY	include/queue.h	195;"	d
-TAILQ_HEAD	include/queue.h	189;"	d
+TAILQ_ENTRY	include/queue.h	193;"	d
+TAILQ_HEAD	include/queue.h	187;"	d
 TESTMACHINE_CONS_H	drivers/gxconsole/dev_cons.h	2;"	d
 TF_BADVADDR	include/trap.h	102;"	d
 TF_CAUSE	include/trap.h	103;"	d
@@ -399,6 +404,7 @@ _SYS_QUEUE_H_	include/queue.h	2;"	d
 _TRAP_H_	include/trap.h	2;"	d
 __ASM_MIPS_REGDEF_H	include/asm-mips3k/regdef.h	10;"	d
 __ASM_MIPS_REGDEF_H	include/asm/regdef.h	10;"	d
+__MEOW_H_	include/meow.h	2;"	d
 __NR_SYSCALLS	include/unistd.h	5;"	d
 __SCHED_H__	include/sched.h	4;"	d
 __SYSCALL_BASE	include/unistd.h	4;"	d
@@ -504,6 +510,7 @@ mCONTEXT	boot/start.S	/^mCONTEXT:$/;"	l
 main	init/main.c	/^int main()$/;"	f
 main	readelf/main.c	/^int main(int argc,char *argv[])$/;"	f
 maxpa	mm/pmap.c	/^u_long maxpa;            \/* Maximum physical address *\/$/;"	v
+meow	include/meow.h	/^void meow() {$/;"	f
 mfc0	lib/genex.S	/^mfc0	t0, CP0_CAUSE$/;"	l
 mfc0	lib/genex.S	/^mfc0	t2, CP0_STATUS$/;"	l
 mips_detect_memory	mm/pmap.c	/^void mips_detect_memory()$/;"	f

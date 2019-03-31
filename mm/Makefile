@@ -12,7 +12,7 @@ INCLUDES	:= -I./ -I../ -I../include/
 	
 .PHONY: clean
 
-all: pmap.o tlb_asm.o pmap.ss
+all: pmap.o tlb_asm.o 
 
 clean:
 	rm -rf *~ *.o *.ss
