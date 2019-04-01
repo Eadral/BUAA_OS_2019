@@ -13,8 +13,6 @@ SECTIONS
   fill in the correct address of the key section
   such as text data bss ...
 */
-    . = 0x80000000;
-    .except_vec3 : { *(.text.exc_vec3) }
     . = 0x80010000;
     .text : { *(.text) }
     .data : { *(.data) }
