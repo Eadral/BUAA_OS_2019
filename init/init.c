@@ -16,7 +16,7 @@ void mips_init()
     //printf("%x\n", maxpa);
 	mips_vm_init();
 	page_init();
-
+    
 	//physical_memory_manage_check();
     page_check();
 
