@@ -46,20 +46,22 @@ void mips_detect_memory()
 static void *alloc(u_int n, u_int align, int clear)
 {
     extern char end[];
+    u_int high = 0x84000000;
     u_long alloced_mem;
     /* Initialize `freemem` if this is the first time. The first virtual address that the
      * linker did *not* assign to any kernel code or global variables. */
     if (freemem == 0) {
-        freemem = (u_long)end;
+        freemem = (u_long)high;
     }
+    
+    freemem = freemem - n;
 
     /* Step 1: Round up `freemem` up to be aligned properly */
-    freemem = ROUND(freemem, align);
+    freemem = ROUNDDOWN(freemem, align);
     /* Step 2: Save current value of `freemem` as allocated chunk. */
     alloced_mem = freemem;
 
     /* Step 3: Increase `freemem` to record allocation. */
-    freemem = freemem + n;
 
     /* Step 4: Clear allocated chunk if parameter `clear` is set. */
     if (clear) {
@@ -67,7 +69,7 @@ static void *alloc(u_int n, u_int align, int clear)
     }
 
     // We're out of memory, PANIC !!
-    if (PADDR(freemem) >= maxpa) {
+    if (freemem < end) {
         panic("out of memorty\n");
         return (void *)-E_NO_MEM;
     }
@@ -205,7 +207,7 @@ page_init(void)
     u_long i;
     for (i = 0; i < npage; i++) {
         apage = &pages[i];        
-        if (ULIM + page2pa(apage) < freemem) {
+        if (ULIM + page2pa(apage) > freemem) {
             apage->pp_ref = 1; 
         } else {
             apage->pp_ref = 0;
