@@ -33,7 +33,7 @@ void mips_detect_memory()
 
     printf("Physical memory: %dK available, ", (int)(maxpa / 1024));
     printf("base = %dK, extended = %dK\n", (int)(basemem / 1024),
-           (int)(extmem / 1024));
+            (int)(extmem / 1024));
 }
 
 /* Overview:
@@ -95,8 +95,6 @@ static Pte *boot_pgdir_walk(Pde *pgdir, u_long va, int create)
         pgtable = (Pte *)KADDR(PTE_ADDR(*pgdir_entryp));
     } 
         
-    
-
     /* Step 2: If the corresponding page table is not exist and parameter `create`
      * is set, create one. And set the correct permission bits for this new page
      * table. */
