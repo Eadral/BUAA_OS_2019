@@ -209,13 +209,35 @@ page_init(void)
             apage->pp_ref = 1; 
         } else {
             apage->pp_ref = 0;
-            LIST_INSERT_HEAD(&page_free_list, apage, pp_link);
+            LIST_INSERT_TAIL(&page_free_list, apage, pp_link);
         }
     }
     
 
     /* Step 4: Mark the other memory as free. */
 }
+
+int get_time = 0;
+void get_page_status(int pa) {
+    get_time++;
+    struct Page* apage = pa2page(pa);
+    struct Page* ipage = 0;
+    LIST_FOREACH(ipage, &page_free_list, pp_link) {
+        if (ipage == apage) {
+            printf("times:%d,page status:%d\n", get_time, 0);
+            return; 
+        }        
+    }
+    int status = 0;
+    if (apage->pp_ref == 0) {
+        status = 0;
+    } else {
+        status = 1;
+    }
+    printf("times:%d,page status:%d\n", get_time, status);
+}
+
+
 
 /*Overview:
 	Allocates a physical page from free memory, and clear this page.
