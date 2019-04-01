@@ -224,15 +224,15 @@ void get_page_status(int pa) {
     struct Page* ipage = 0;
     LIST_FOREACH(ipage, &page_free_list, pp_link) {
         if (ipage == apage) {
-            printf("times:%d,page status:%d\n", get_time, 0);
+            printf("times:%d,page status:%d\n", get_time, 1);
             return; 
         }        
     }
     int status = 0;
     if (apage->pp_ref == 0) {
-        status = 0;
+        status = 2;
     } else {
-        status = 1;
+        status = 3;
     }
     printf("times:%d,page status:%d\n", get_time, status);
 }
