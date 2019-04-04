@@ -6,16 +6,12 @@ INCLUDES	:= -I./ -I../ -I../include/
 %.o: %.S
 	$(CC) $(CFLAGS) $(INCLUDES) -c $<
 
-%.ss: %.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c -g -Wa,-adlhn $< > $@
-	# $(CC) $(CFLAGS) $(INCLUDES) -S $< 
-	
 .PHONY: clean
 
-all: pmap.o tlb_asm.o 
+all: pmap.o tlb_asm.o
 
 clean:
-	rm -rf *~ *.o *.ss
+	rm -rf *~ *.o
 
 
 include ../include.mk

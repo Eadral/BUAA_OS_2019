@@ -1,5 +1,3 @@
-#pragma GCC optimize("O0")
-
 /*
  * Copyright (C) 2001 MontaVista Software Inc.
  * Author: Jun Sun, jsun@mvista.com or jsun@junsun.net
@@ -17,7 +15,7 @@
 int main()
 {
 	printf("main.c:\tmain is start ...\n");
-    
+
 	mips_init();
 	panic("main is over is error!");
 
