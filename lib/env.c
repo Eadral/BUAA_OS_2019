@@ -267,7 +267,7 @@ static int load_icode_mapper(u_long va, u_int32_t sgsize,
     }
 
 	/*Step 1: load all content of bin into memory. */
-	for (; i < bin_size-BY2PG; i += BY2PG) {
+	for (; bin_size > BY2PG && i < bin_size-BY2PG; i += BY2PG) {
 		/* Hint: You should alloc a page and increase the reference count of it. */
         r = page_alloc(&p);
         ERR(r);
@@ -337,7 +337,6 @@ load_icode(struct Env *e, u_char *binary, u_int size)
     /*Step 3:load the binary by using elf loader. */
     r = load_elf(binary, size, &entry_point, (void *)e, load_icode_mapper);
     ERR(r);
-
     /***Your Question Here***/
     /*Step 4:Set CPU's PC register as appropriate value. */
 	e->env_tf.pc = entry_point;
@@ -355,13 +354,18 @@ load_icode(struct Env *e, u_char *binary, u_int size)
 void
 env_create_priority(u_char *binary, int size, int priority)
 {
-        struct Env *e;
+    struct Env *e;
+    int r = 0;
     /*Step 1: Use env_alloc to alloc a new env. */
-
+    r = env_alloc(&e, 0);
+    ERR(r);
     /*Step 2: assign priority to the new env. */
+    e->env_pri = priority; 
 
     /*Step 3: Use load_icode() to load the named elf binary. */
-
+    load_icode(e, binary, size);
+    
+    LIST_INSERT_HEAD(&env_sched_list[0], e, env_sched_link);
 }
 /* Overview:
  * Allocates a new env with default priority value.
@@ -373,8 +377,8 @@ env_create_priority(u_char *binary, int size, int priority)
 void
 env_create(u_char *binary, int size)
 {
-	 /*Step 1: Use env_create_priority to alloc a new env with priority 1 */
-
+	/*Step 1: Use env_create_priority to alloc a new env with priority 1 */
+    env_create_priority(binary, size, 1);
 }
 
 /* Overview:
