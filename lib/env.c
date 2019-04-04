@@ -198,13 +198,18 @@ env_alloc(struct Env **new, u_int parent_id)
 {
 	int r;
 	struct Env *e;
-    
+    //PRINTX(env_free_list); 
     /*Step 1: Get a new Env from env_free_list*/
     e = LIST_FIRST(&env_free_list);
-    
+    if (e == NULL) {
+        return -E_NO_FREE_ENV;
+    }
+
+    //PRINTX(e); 
     /*Step 2: Call certain function(has been implemented) to init kernel memory layout for this new Env.
      *The function mainly maps the kernel address to this new Env address. */
-    env_setup_vm(e);
+    r = env_setup_vm(e);
+    ERR(r);
 
     /*Step 3: Initialize every field of new Env with appropriate values*/
     e->env_id = mkenvid(e);
@@ -218,7 +223,9 @@ env_alloc(struct Env **new, u_int parent_id)
 
     /*Step 5: Remove the new Env from Env free list*/
     LIST_REMOVE(e, env_link);
-
+    
+    *new = e;
+    return 0;
 }
 
 /* Overview:
@@ -492,7 +499,6 @@ void env_check()
         assert(pe0);
         assert(pe1 && pe1 != pe0);
         assert(pe2 && pe2 != pe1 && pe2 != pe0);
-
  	// temporarily steal the rest of the free envs
  	fl = env_free_list;
 	// now this env_free list must be empty!!!!
