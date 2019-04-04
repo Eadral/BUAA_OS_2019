@@ -13,19 +13,24 @@
  */
 
 u_long count = 0;
+int c_list = 0;
 struct Env* env = NULL;
 
 void sched_yield(void) {
-    
     if (count != 0) {
         count--;
     } else {
-        env = LIST_FIRST(&env_sched_list[0]);
-        if (env == NULL)
-            panic("NO runnable process\n");
+        env = LIST_FIRST(&env_sched_list[c_list]);
+        if (env == NULL) {
+            panic("no runnable process\n");   
+        }
         count = env->env_pri;
         LIST_REMOVE(env, env_sched_link);
-        LIST_INSERT_TAIL(&env_sched_list[0], env, env_sched_link);
+        LIST_INSERT_HEAD(&env_sched_list[1 - c_list], env, env_sched_link);
+        // FIXME: why LIST_INSERT_TAIL failed
+        if (LIST_FIRST(&env_sched_list[c_list]) == NULL) {
+            c_list = 1 - c_list;
+        }
     }
     env_run(env);
     return;

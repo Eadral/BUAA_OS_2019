@@ -111,9 +111,10 @@ env_init(void)
 
         aenv->env_status = ENV_FREE;
         LIST_INSERT_HEAD(&env_free_list, aenv, env_link);
-        
-    
     }
+
+    LIST_INIT(&env_sched_list[0]);
+    LIST_INIT(&env_sched_list[1]);
 
 }
 
