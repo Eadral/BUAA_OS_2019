@@ -7,6 +7,7 @@
 #include <kerelf.h>
 #include <types.h>
 #include <pmap.h>
+#include <meow.h>
 
 /* Overview:
  *   Check whether it is a ELF file.
@@ -50,38 +51,38 @@ int load_elf(u_char *binary, int size, u_long *entry_point, void *user_data,
 	Elf32_Ehdr *ehdr = (Elf32_Ehdr *)binary;
 	Elf32_Phdr *phdr = NULL;
 	 /* As a loader, we just care about segment,
-           * so we just parse program headers.
-           */
+      * so we just parse program headers.
+      */
 	u_char *ptr_ph_table = NULL;
-        Elf32_Half ph_entry_count;
-        Elf32_Half ph_entry_size;
-        int r;
+    Elf32_Half ph_entry_count;
+    Elf32_Half ph_entry_size;
+    int r;
 	
 	 // check whether `binary` is a ELF file.
 	if (size < 4 || !is_elf_format(binary)) {
-                return -1;
-        }
+        return -1;
+    }
 
-        ptr_ph_table = binary + ehdr->e_phoff;
-        ph_entry_count = ehdr->e_phnum;
-        ph_entry_size = ehdr->e_phentsize;
+    ptr_ph_table = binary + ehdr->e_phoff;
+    ph_entry_count = ehdr->e_phnum;
+    ph_entry_size = ehdr->e_phentsize;
 
-        while (ph_entry_count--) {
-                phdr = (Elf32_Phdr *)ptr_ph_table;
+    while (ph_entry_count--) {
+        phdr = (Elf32_Phdr *)ptr_ph_table;
 
-                if (phdr->p_type == PT_LOAD) {
-	 /* Your task here!  */
+        if (phdr->p_type == PT_LOAD) {
+	    /* Your task here!  */
         /* Real map all section at correct virtual address.Return < 0 if error. */
         /* Hint: Call the callback function you have achieved before. */
-	
+            r = map(phdr->p_vaddr, phdr->p_memsz, binary+phdr->p_offset, phdr->p_filesz, user_data);	
+            ERRR(r);
 
 
-
-                }
-
-                ptr_ph_table += ph_entry_size;
         }
 
-        *entry_point = ehdr->e_entry;
-        return 0;
+        ptr_ph_table += ph_entry_size;
+    }
+
+    *entry_point = ehdr->e_entry;
+    return 0;
 }
