@@ -260,10 +260,10 @@ static int load_icode_mapper(u_long va, u_int32_t sgsize,
         r = page_alloc(&p);
         ERR(r);
         p->pp_ref++;
+        r = page_insert(pgdir, p, va+i, PTE_R);
+        ERR(r);
         u_long partial = BY2PG - offset;
         bcopy(&bin[i], page2kva(p)+offset, partial);
-        r = page_insert(pgdir, p, va, PTE_R);
-        ERR(r);
         i += partial;
     }
 
@@ -273,9 +273,9 @@ static int load_icode_mapper(u_long va, u_int32_t sgsize,
         r = page_alloc(&p);
         ERR(r);
         p->pp_ref++;
-        bcopy(&bin[i], page2kva(p), BY2PG);
         r = page_insert(pgdir, p, va+i, PTE_R);
         ERR(r);
+        bcopy(&bin[i], page2kva(p), BY2PG);
 	}
 
 
@@ -283,6 +283,8 @@ static int load_icode_mapper(u_long va, u_int32_t sgsize,
         r = page_alloc(&p);
         ERR(r);
         p->pp_ref++;
+        r = page_insert(pgdir, p, va+i, PTE_R);
+        ERR(r);
         u_long partial = bin_size-i;
         bcopy(&bin[i], page2kva(p), partial);
     }

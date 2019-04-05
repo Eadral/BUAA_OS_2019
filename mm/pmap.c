@@ -355,6 +355,7 @@ page_insert(Pde *pgdir, struct Page *pp, u_long va, u_int perm)
 
     if (pgtable_entry != 0 && (*pgtable_entry & PTE_V) != 0) {
         if (pa2page(*pgtable_entry) != pp) {
+            bcopy(page2kva(pa2page(*pgtable_entry)), page2kva(pp), BY2PG);
             page_remove(pgdir, va);
         } else	{
             tlb_invalidate(pgdir, va);
