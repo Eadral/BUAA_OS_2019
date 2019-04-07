@@ -77,7 +77,6 @@ int load_elf(u_char *binary, int size, u_long *entry_point, void *user_data,
             r = map(phdr->p_vaddr, phdr->p_memsz, binary+phdr->p_offset, phdr->p_filesz, user_data);	
             ERRR(r);
 
-
         }
 
         ptr_ph_table += ph_entry_size;
