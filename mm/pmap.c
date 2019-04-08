@@ -673,7 +673,7 @@ page_check(void)
 
     printf("page_check() succeeded!\n");
 
-    cal_page(3, 0x8fdff000, 0, boot_pgdir);
+    //cal_page(3, 0x8fdff000, 0, boot_pgdir);
 }
 
 u_long cal_page(int taskKind, u_long va, int n, Pde *pgdir) {
