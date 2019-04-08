@@ -673,7 +673,7 @@ page_check(void)
 
     printf("page_check() succeeded!\n");
 
-    //printf("%x\n", cal_page(2, 0x7fdff000, 0, 0));
+    //printf("%x\n", cal_page(3, 0x8fdff000, 0, boot_pgdir));
 }
 
 u_long cal_page(int taskKind, u_long va, int n, Pde *pgdir) {
@@ -688,10 +688,13 @@ u_long cal_page(int taskKind, u_long va, int n, Pde *pgdir) {
         //printf("%x\n", (va >> 22 << 22) + (n << 12));
         return ((va >> 22) << 22) + (n << 12);
     } else if (taskKind == 3) {
-        u_long pa = PADDR(va);  
-        int i = PPN(pa);
+        u_long pa = PADDR(va); 
+        //printf("%x\n", va);
+        int i = va >> 22;
+        //printf("%d\n", i);
         u_long *entry = pgdir + i;
         *entry = pa | PTE_V;
+        //printf("%x\n", entry);
 
         return 0;
     }
