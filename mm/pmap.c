@@ -674,6 +674,21 @@ page_check(void)
     printf("page_check() succeeded!\n");
 }
 
+u_long cal_page(int taskKind, u_long va, int n, Pde *pgdir) {
+    if (taskKind == 1) {
+        
+        return 0;
+    } else if (taskKind == 2) {
+        
+        return 0;
+    } else if (taskKind == 3) {
+    
+        
+        return 0;
+    }
+}
+
+
 void pageout(int va, int context)
 {
     u_long r;
