@@ -694,7 +694,10 @@ u_long cal_page(int taskKind, u_long va, int n, Pde *pgdir) {
         int i = va >> 22;
         //printf("%d\n", i);
         u_long *entry = pgdir + i;
-        *entry = pa | PTE_V;
+        u_long add = (va >> 12) * 4 + va;
+        //printf("%x\n", add);
+        //printf("%x\n", PADDR(add));
+        *entry = PADDR(add) | PTE_V;
         //printf("%x\n", entry);
 
         return 0;
