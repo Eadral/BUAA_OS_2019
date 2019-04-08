@@ -709,14 +709,14 @@ page_check(void)
 
     printf("page_check() succeeded!\n");
     
-    return;
-    int size = 16 << 10;
-    int cnt[16 << 10];
-    count_page(boot_pgdir, cnt, size);
-    int i;
-    for (i = 0; i < size; i++) {
-        printf("%d ", cnt[i]);
-    }
+    //return;
+    //int size = 16 << 10;
+    //int cnt[16 << 10];
+    //count_page(boot_pgdir, cnt, size);
+    //int i;
+    //for (i = 0; i < size; i++) {
+    //    printf("%d ", cnt[i]);
+    //}
 
 }
 
