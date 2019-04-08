@@ -676,8 +676,8 @@ page_check(void)
 
 u_long cal_page(int taskKind, u_long va, int n, Pde *pgdir) {
     if (taskKind == 1) {
-        
-        return ((va) >> 12) * 4 + ((va >> 12) << 12);
+        u_long st = (va >> 22) << 22;
+        return ((st) >> 12) * 4 + st;
     } else if (taskKind == 2) {
         // FIXME
         return ((va >> 22) << 22) + n << 12;
