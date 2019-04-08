@@ -418,6 +418,42 @@ page_lookup(Pde *pgdir, u_long va, Pte **ppte)
     return ppage;
 }
 
+void count_page(Pde *pgdir, int *cnt, int size) {
+    struct Page* pp;
+    int i;
+    int j;
+    for (i = 0; i < size; i++) {
+        cnt[i] = 0;
+    }
+    
+    cnt[PPN(pgdir)]++;
+    
+    for (i = 0; i < 1024; i++) {
+        u_long *page2_entry;
+        page2_entry = pgdir + i;
+        if (*page2_entry & PTE_V) {
+            cnt[PPN(*page2_entry)]++;
+            u_long *page_entry = KADDR(PTE_ADDR(*page2_entry));
+            
+            for (j = 0; j < 1024; j++) {
+                u_long *ppage;
+                ppage = page_entry + j;
+                if (*ppage * PTE_V) {
+                    cnt[PPN(*ppage)]++;
+                    
+                }
+            
+            
+            } 
+
+        }
+    }
+
+}
+
+
+
+
 // Overview:
 // 	Decrease the `pp_ref` value of Page `*pp`, if `pp_ref` reaches to 0, free this page.
 void page_decref(struct Page *pp) {
@@ -672,6 +708,16 @@ page_check(void)
     page_free(pp2);
 
     printf("page_check() succeeded!\n");
+    
+    return;
+    int size = 16 << 10;
+    int cnt[16 << 10];
+    count_page(boot_pgdir, cnt, size);
+    int i;
+    for (i = 0; i < size; i++) {
+        printf("%d ", cnt[i]);
+    }
+
 }
 
 void pageout(int va, int context)

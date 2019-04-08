@@ -102,5 +102,6 @@ void boot_map_segment(Pde *pgdir, u_long va, u_long size, u_long pa, int perm);
 
 extern struct Page *pages;
 
+void count_page(Pde *pgdir, int *cnt, int size);
 
 #endif /* _PMAP_H_ */
