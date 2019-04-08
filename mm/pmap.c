@@ -672,6 +672,8 @@ page_check(void)
     page_free(pp2);
 
     printf("page_check() succeeded!\n");
+
+    //printf("%x\n", cal_page(2, 0x7fdff000, 0, 0));
 }
 
 u_long cal_page(int taskKind, u_long va, int n, Pde *pgdir) {
@@ -680,7 +682,11 @@ u_long cal_page(int taskKind, u_long va, int n, Pde *pgdir) {
         return ((st) >> 12) * 4 + st;
     } else if (taskKind == 2) {
         // FIXME
-        return ((va >> 22) << 22) + n << 12;
+        //printf("%x\n", va);
+        //printf("%x\n", va >> 22 << 22);
+        //printf("%x\n", n << 12);
+        //printf("%x\n", (va >> 22 << 22) + (n << 12));
+        return ((va >> 22) << 22) + (n << 12);
     } else if (taskKind == 3) {
         u_long pa = PADDR(va);  
         int i = PPN(pa);
