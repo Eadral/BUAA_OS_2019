@@ -26,6 +26,7 @@ void mips_init()
 	
 	trap_init();
 	kclock_init();
+
 	panic("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 	while(1);
 	panic("init.c:\tend of mips_init() reached!");

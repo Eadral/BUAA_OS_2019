@@ -54,6 +54,7 @@ va2pa(Pde *pgdir, u_long va)
 {
 	Pte *p;
 
+
 	pgdir = &pgdir[PDX(va)];
 	if (!(*pgdir&PTE_V))
 		return ~0;
