@@ -325,7 +325,7 @@ load_icode(struct Env *e, u_char *binary, u_int size)
 	struct Page *p = NULL;
 	u_long entry_point;
 	u_long r;
-    u_long perm;
+    u_long perm = PTE_R | PTE_V;
     
     /*Step 1: alloc a page. */
     r = page_alloc(&p);
@@ -334,7 +334,7 @@ load_icode(struct Env *e, u_char *binary, u_int size)
 
     /*Step 2: Use appropriate perm to set initial stack for new Env. */
     /*Hint: The user-stack should be writable? */
-    r = page_insert(e->env_pgdir, p, USTACKTOP - BY2PG, PTE_R);
+    r = page_insert(e->env_pgdir, p, USTACKTOP - BY2PG, perm);
     ERR(r);
 
     /*Step 3:load the binary by using elf loader. */
@@ -467,7 +467,7 @@ env_run(struct Env *e)
 	/*Step 1: save register state of curenv. */
     /* Hint: if there is a environment running,you should do
     *  context switch.You can imitate env_destroy() 's behaviors.*/
-    struct Trapframe* old = (void *)TIMESTACK - sizeof(struct Trapframe);
+    struct Trapframe* old = (struct Trapframe*)(TIMESTACK - sizeof(struct Trapframe));
     if (curenv != NULL) {
         bcopy(old,
               &(curenv->env_tf),
