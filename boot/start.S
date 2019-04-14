@@ -31,7 +31,7 @@ NESTED(except_vec3, 0, sp)
 		 * to implement software exceptions in the future.
 		 */
 
-		andi	k1,0x7c
+		andi	k1,0x7c // {ExcCode, 2'b0}
 		addu	k0,k1
 		lw	k0,(k0)
 		NOP
