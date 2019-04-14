@@ -259,7 +259,6 @@ static int load_icode_mapper(u_long va, u_int32_t sgsize,
     if (offset != 0) {
         r = page_alloc(&p);
         ERR(r);
-        p->pp_ref++;
         r = page_insert(pgdir, p, va+i, PTE_R);
         ERR(r);
         u_long partial = BY2PG - offset;
@@ -272,7 +271,6 @@ static int load_icode_mapper(u_long va, u_int32_t sgsize,
 		/* Hint: You should alloc a page and increase the reference count of it. */
         r = page_alloc(&p);
         ERR(r);
-        p->pp_ref++;
         r = page_insert(pgdir, p, va+i, PTE_R);
         ERR(r);
         bcopy(&bin[i], page2kva(p), BY2PG);
@@ -282,7 +280,6 @@ static int load_icode_mapper(u_long va, u_int32_t sgsize,
     if (i < bin_size) {
         r = page_alloc(&p);
         ERR(r);
-        p->pp_ref++;
         r = page_insert(pgdir, p, va+i, PTE_R);
         ERR(r);
         u_long partial = bin_size-i;
@@ -293,7 +290,6 @@ static int load_icode_mapper(u_long va, u_int32_t sgsize,
 	while (i < sgsize) {
         r = page_alloc(&p);
         ERR(r);
-        p->pp_ref++;
         r = page_insert(pgdir, p, va+i, PTE_R);
         ERR(r);
         i += BY2PG;
