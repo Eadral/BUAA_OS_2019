@@ -195,7 +195,7 @@ env_setup_vm(struct Env *e)
  */
 
 u_int fa(u_int envid) {
-    printf("finding %d\n", envid);
+    //printf("finding %d\n", envid);
     struct Env *e = NULL;
     envid2env(envid, &e, 0);
     if (e->env_parent_id == 0) {
@@ -210,7 +210,8 @@ u_int find(u_int envid) {
     
     u_int fa_envid = envid;
     while (fa_envid != fa(fa_envid)) {
-        fa_envid = fa(fa_envid);
+        //printf("F: %d, %d\n", fa_envid, fa(fa_envid));
+        fa_envid = find(fa(fa_envid));
     }
 
     e->env_parent_id = fa_envid;
@@ -256,6 +257,7 @@ void kill_all(u_int envid) {
     } else {
     
     for (i = 0; i < NENV; i++) {
+    //printf("finding %d\n", envid);
         e = &envs[i];
         if (e->env_id == 0)
             continue;
@@ -276,19 +278,21 @@ void meow_test() {
     struct Env *e1;
     struct Env *e2;
     struct Env *e3;
+    struct Env *e4;
     
     env_alloc(&e1, 0);
     env_alloc(&e2, e1->env_id);
     env_alloc(&e3, e1->env_id);
+    env_alloc(&e4, e2->env_id);
 
     int x;
-    x = check_same_root(e2->env_id, e3->env_id);
+    x = check_same_root(e4->env_id, e3->env_id);
 
     printf("%d\n", x);
     e3->env_status = ENV_NOT_RUNNABLE; 
-    kill_all(e1->env_id);
+    kill_all(e4->env_id);
 
-    printf("%d %d %d\n", e1->env_status, e2->env_status, e3->env_status);
+    printf("%d %d %d %d\n", e1->env_status, e2->env_status, e3->env_status, e4->env_status);
 
     STOP();
 }
