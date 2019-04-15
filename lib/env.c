@@ -194,27 +194,95 @@ env_setup_vm(struct Env *e)
  *      (the value of PC should NOT be set in env_alloc)
  */
 
-u_int 
-
-int find(u_int envid) {
-    struct Env e* = NULL;
+u_int fa(u_int envid) {
+   // printf("finding %d\n", envid);
+    struct Env *e = NULL;
     envid2env(envid, &e, 0);
-    envid 
+    if (e->env_parent_id == 0) {
+        return envid;
+    } 
+    return e->env_parent_id;
+} 
+
+u_int find(u_int envid) {
+    struct Env *e = NULL;
+    envid2env(envid, &e, 0);
+    
+    u_int fa_envid = envid;
+    while (fa_envid != fa(fa_envid)) {
+        fa_envid = fa(fa_envid);
+    }
+
+    e->env_parent_id = fa_envid;
+    return fa_envid;
+
 }
 
 
 int check_same_root(u_int envid1, u_int envid2) {
-    
+    struct Env *e1;
+    struct Env *e2;
+    envid2env(envid1, &e1, 0);
+    envid2env(envid2, &e2, 0);
+
+    if (e1->env_status == ENV_NOT_RUNNABLE || e2->env_status == ENV_NOT_RUNNABLE) {
+        return -1;
+    } else if (find(envid1) != find(envid2)) {
+        return 0;
+    } else {
+        return 1;
+    }
 
 }
 
 void kill_all(u_int envid) {
+    u_int root = find(envid);
+
+    int has_not = 0;
+    int i;
+    struct Env *e;
+    for (i = 0; i < NENV; i++) {
+        e = &envs[i];
+        if (find(e->env_id) == root && e->env_status == ENV_NOT_RUNNABLE) {
+            has_not = 1;
+            break;
+        }
+    }
+
+    if (has_not) {
+        printf("something is wrong!\n");
+    } else {
+    
+    for (i = 0; i < NENV; i++) {
+        e = &envs[i];
+        if (find(e->env_id) == root) {
+            e->env_status = ENV_NOT_RUNNABLE;
+        }
+    }
+        
+    }
+
 
 }
 
 void meow_test() {
+    
+    return;
 
+    struct Env *e1;
+    struct Env *e2;
+    struct Env *e3;
+    
+    env_alloc(&e1, 0);
+    env_alloc(&e2, e1->env_id);
+    env_alloc(&e3, e1->env_id);
 
+    int x;
+    x = check_same_root(e2->env_id, e3->env_id);
+
+    printf("%d\n", x);
+   
+    STOP();
 }
 
 int
