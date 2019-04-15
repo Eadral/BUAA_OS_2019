@@ -236,8 +236,32 @@ int check_same_root(u_int envid1, u_int envid2) {
 
 }
 
+u_int oarr[NENV];
+
+u_int ofind(u_int envid) {
+    struct Env * e;
+    envid2env(envid, &e, 0);
+    return oarr[e - envs];
+
+}
+
+void init_ofind() {
+    int i;
+    struct Env *e;
+    for (i = 0; i < NENV; i++) {
+        e = &envs[i];
+        if (e->env_id == 0) 
+            oarr[e - envs] = 0;
+        else
+            oarr[e - envs] = find(e->env_id);
+    }
+
+}
+
 void kill_all(u_int envid) {
-    u_int root = find(envid);
+    init_ofind();
+
+    u_int root = ofind(envid);
 
     int has_not = 0;
     int i;
@@ -246,7 +270,7 @@ void kill_all(u_int envid) {
         e = &envs[i];
         if (e->env_id == 0)
             continue;
-        if (find(e->env_id) == root && e->env_status == ENV_NOT_RUNNABLE) {
+        if (ofind(e->env_id) == root && e->env_status == ENV_NOT_RUNNABLE) {
             has_not = 1;
             break;
         }
@@ -261,7 +285,7 @@ void kill_all(u_int envid) {
         e = &envs[i];
         if (e->env_id == 0)
             continue;
-        if (find(e->env_id) == root) {
+        if (ofind(e->env_id) == root) {
             e->env_status = ENV_NOT_RUNNABLE;
         }
     }
