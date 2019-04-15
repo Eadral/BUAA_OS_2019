@@ -46,7 +46,7 @@ u_int newmkenvid(struct Env *e, int pri) {
     
     u_int idx = e - envs;
     
-    return (++next_new_env_id << (LOG2NENV+2)) | (pri<<LOG2NENV) | idx;
+    return (++next_new_env_id << (LOG2NENV+4)) | (pri<<LOG2NENV) | idx;
 
 
 }
@@ -56,7 +56,7 @@ void output_env_info(int envid) {
     
     u_int idx = ENVX(envid);
 
-    int pri = (envid >> 10) & ((1 << 2) - 1);
+    int pri = (envid >> 10) & ((1 << 4) - 1);
 
     printf("no=%d,env_index=%d,env_pri=%d\n", no, idx, pri);
     no++;
@@ -574,12 +574,21 @@ void env_check()
         assert(pe2->env_tf.cp0_status == 0x10001004);
         printf("pe2`s sp register %x\n",pe2->env_tf.regs[29]);
         printf("env_check() succeeded!\n");
+    
+        return;
 
-        //u_int x = newmkenvid(&envs[0], 1);
-        //output_env_info(x);
-        //x = newmkenvid(&envs[1], 3);
-        //output_env_info(x);
+        u_int x = newmkenvid(&envs[0], 1);
+        printf("%d\n", x);
+        output_env_info(x);
+        
+        x = newmkenvid(&envs[1], 3);
+        printf("%d\n", x);
+        output_env_info(x);
 
-        //STOP();
+        x = newmkenvid(&envs[1023], 15);
+        printf("%d\n", x);
+        output_env_info(x);
+        
+        STOP();
 
 }
