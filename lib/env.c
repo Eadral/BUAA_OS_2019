@@ -194,6 +194,29 @@ env_setup_vm(struct Env *e)
  *      (the value of PC should NOT be set in env_alloc)
  */
 
+u_int 
+
+int find(u_int envid) {
+    struct Env e* = NULL;
+    envid2env(envid, &e, 0);
+    envid 
+}
+
+
+int check_same_root(u_int envid1, u_int envid2) {
+    
+
+}
+
+void kill_all(u_int envid) {
+
+}
+
+void meow_test() {
+
+
+}
+
 int
 env_alloc(struct Env **new, u_int parent_id)
 {
@@ -553,4 +576,7 @@ void env_check()
         assert(pe2->env_tf.cp0_status == 0x10001004);
         printf("pe2`s sp register %x\n",pe2->env_tf.regs[29]);
         printf("env_check() succeeded!\n");
+
+
+        meow_test();
 }
