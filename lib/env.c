@@ -110,11 +110,47 @@ int envid2env(u_int envid, struct Env **penv, int checkperm)
 }
 
 void init_envid() {
+    int i = 0;
+    struct Env* e = NULL;
+    for (i = 0; i < NENV; i++) {
+        e = &envs[i];
 
+        e->env_id = newmkenvid(e, e->env_pri);
+    }
 }
 
 int newenvid2env(u_int envid, struct Env**penv, int checkperm) {
     
+    struct Env *e;
+    /* Hint:
+     *  If envid is zero, return the current environment.*/
+    /*Step 1: Assign value to e using envid. */
+    if (envid == 0) {
+        *penv = curenv;
+        return 0;
+    }
+    
+    e = &envs[ENVX(envid)];
+
+    if (e->env_status == ENV_FREE || e->env_id != envid) {
+        *penv = 0;
+        return -E_BAD_ENV;
+    }
+    /* Hint:
+     *  Check that the calling environment has legitimate permissions
+     *  to manipulate the specified environment.
+     *  If checkperm is set, the specified environment
+     *  must be either the current environment.
+     *  or an immediate child of the current environment.If not, error! */
+    /*Step 2: Make a check according to checkperm. */
+    if (checkperm && e != curenv && e->env_parent_id != curenv->env_id) {
+        *penv = 0;
+        return -E_BAD_ENV;
+    }
+
+
+
+    *penv = e;
     return 0;
 }
 
@@ -583,20 +619,20 @@ void env_check()
         assert(pe2->env_tf.cp0_status == 0x10001004);
         printf("pe2`s sp register %x\n",pe2->env_tf.regs[29]);
         printf("env_check() succeeded!\n");
-    
-        return;
-
-        u_int x = newmkenvid(&envs[0], 1);
-        printf("%d\n", x);
-        output_env_info(x);
         
-        x = newmkenvid(&envs[1], 3);
-        printf("%d\n", x);
-        output_env_info(x);
+        return;
+        
+        init_envid();
 
-        x = newmkenvid(&envs[1023], 15);
-        printf("%d\n", x);
-        output_env_info(x);
+
+        //u_int x = newmkenvid(&envs[0], 1);
+        //printf("%d\n", x);
+        //output_env_info(x);
+
+        struct Env* e;
+        newenvid2env(envs[0].env_id, &e, 0);
+        printf("%d\n", e == &envs[0]);
+        
         
         STOP();
 
