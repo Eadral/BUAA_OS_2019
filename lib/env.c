@@ -195,7 +195,7 @@ env_setup_vm(struct Env *e)
  */
 
 u_int fa(u_int envid) {
-   // printf("finding %d\n", envid);
+    printf("finding %d\n", envid);
     struct Env *e = NULL;
     envid2env(envid, &e, 0);
     if (e->env_parent_id == 0) {
@@ -243,6 +243,8 @@ void kill_all(u_int envid) {
     struct Env *e;
     for (i = 0; i < NENV; i++) {
         e = &envs[i];
+        if (e->env_id == 0)
+            continue;
         if (find(e->env_id) == root && e->env_status == ENV_NOT_RUNNABLE) {
             has_not = 1;
             break;
@@ -255,6 +257,8 @@ void kill_all(u_int envid) {
     
     for (i = 0; i < NENV; i++) {
         e = &envs[i];
+        if (e->env_id == 0)
+            continue;
         if (find(e->env_id) == root) {
             e->env_status = ENV_NOT_RUNNABLE;
         }
@@ -281,7 +285,11 @@ void meow_test() {
     x = check_same_root(e2->env_id, e3->env_id);
 
     printf("%d\n", x);
-   
+    e3->env_status = ENV_NOT_RUNNABLE; 
+    kill_all(e1->env_id);
+
+    printf("%d %d %d\n", e1->env_status, e2->env_status, e3->env_status);
+
     STOP();
 }
 
