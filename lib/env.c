@@ -58,7 +58,7 @@ void output_env_info(int envid) {
 
     int pri = (envid >> 10) & ((1 << 2) - 1);
 
-    printf("no%d,env_index=%d,env_pri=%d\n", no, idx, pri);
+    printf("no=%d,env_index=%d,env_pri=%d\n", no, idx, pri);
     no++;
 }
 
@@ -577,5 +577,9 @@ void env_check()
 
         //u_int x = newmkenvid(&envs[0], 1);
         //output_env_info(x);
+        //x = newmkenvid(&envs[1], 3);
+        //output_env_info(x);
+
+        //STOP();
 
 }
