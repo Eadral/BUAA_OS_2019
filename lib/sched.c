@@ -33,5 +33,4 @@ void sched_yield(void) {
     count--;
     //printf("@%d@\n", env->env_pri);
     env_run(env);
-    return;
 }
