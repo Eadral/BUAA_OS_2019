@@ -441,6 +441,19 @@ env_destroy(struct Env *e)
 		printf("i am killed ... \n");
 		sched_yield();
 	}
+    
+    struct Env *e_list = NULL;
+    LIST_FOREACH(e_list, &env_sched_list[0], env_sched_link) {
+        if (e_list == e)
+            LIST_REMOVE(e_list, env_sched_link);
+    
+    }
+
+    LIST_FOREACH(e_list, &env_sched_list[1], env_sched_link) {
+        if (e_list == e)
+            LIST_REMOVE(e_list, env_sched_link);
+    }
+
 }
 
 extern void env_pop_tf(struct Trapframe *tf, int id);
