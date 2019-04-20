@@ -1,0 +1,14 @@
+*.swp
+*.swn
+*.swo
+*.swm
+
+
+*.o
+*.ss
+
+
+
+tags
+gxemul/vmlinux
+
