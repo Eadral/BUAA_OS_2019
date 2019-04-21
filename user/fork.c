@@ -81,11 +81,17 @@ void user_bzero(void *v, u_int n)
 static void
 pgfault(u_int va)
 {
-	u_int *tmp;
+	u_int *ppte = 0;
+    int r;
 	//	writef("fork.c:pgfault():\t va:%x\n",va);
-    
+    r = pgdir_walk(curenv->env_cr3, va, 0, &ppte); 
+    ERR(r);
+    if (ppte & PTE_COW == 0) {
+        user_panic("not a copy-on-write page");
+    }
     //map the new page at a temporary place
-
+    u_int *tmp;
+    syscall_mem_alloc(curenv->env_id, va, PTE_V);
 	//copy the content
 	
     //map the page on the appropriate place
