@@ -431,17 +431,6 @@ env_destroy(struct Env *e)
     /* Hint: free e. */
 	env_free(e);
 
-    /* Hint: schedule to run a new environment. */
-	if (curenv == e) {
-		curenv = NULL;
-        /* Hint:Why this? */
-		bcopy((void *)KERNEL_SP - sizeof(struct Trapframe),
-			  (void *)TIMESTACK - sizeof(struct Trapframe),
-			  sizeof(struct Trapframe));
-		printf("i am killed ... \n");
-		sched_yield();
-	}
-    
     struct Env *e_list = NULL;
     LIST_FOREACH(e_list, &env_sched_list[0], env_sched_link) {
         if (e_list == e)
@@ -453,6 +442,18 @@ env_destroy(struct Env *e)
         if (e_list == e)
             LIST_REMOVE(e_list, env_sched_link);
     }
+
+    /* Hint: schedule to run a new environment. */
+	if (curenv == e) {
+		curenv = NULL;
+        /* Hint:Why this? */
+		bcopy((void *)KERNEL_SP - sizeof(struct Trapframe),
+			  (void *)TIMESTACK - sizeof(struct Trapframe),
+			  sizeof(struct Trapframe));
+		printf("i am killed ... \n");
+		sched_yield();
+	}
+    
 
 }
 
