@@ -57,7 +57,7 @@ u_int sys_getenvid(void)
 
 /* Overview:
  *	This function enables the current process to give up CPU.
- *
+ * 
  * Post-Condition:
  * 	Deschedule current environment. This function will never return.
  */
@@ -309,6 +309,8 @@ void sys_panic(int sysno, char *msg)
  */
 void sys_ipc_recv(int sysno, u_int dstva)
 {
+    curenv->env_ipc_recving = 1;
+
 }
 
 /* Overview:
