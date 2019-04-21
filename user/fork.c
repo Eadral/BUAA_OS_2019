@@ -113,9 +113,17 @@ pgfault(u_int va)
 static void
 duppage(u_int envid, u_int pn)
 {
-	u_int addr;
-	u_int perm;
-
+    u_int pte = (*vpt)[pn];
+	u_int addr = PTE_ADDR(pte);
+	u_int perm = pte & 0xFFF;
+    
+    if (perm & PTE_V && (perm & PTE_COW || perm & PTE_R)) {
+        syscall_mem_map(0, addr, envid, addr, perm | PTE_COW); 
+        syscall_mem_map(0, addr, 0, addr, perm | PTE_COW);
+    } else {
+        syscall_mem_map(0, addr, envid, addr, perm); 
+    }
+    
 	//	user_panic("duppage not implemented");
 }
 
@@ -138,7 +146,17 @@ fork(void)
 	extern struct Env *env;
 	u_int i;
 
-
+    newenvid = syscall_env_alloc();
+    if (newenvid == 0) {
+        // child
+        
+        return 0;
+    } else {
+        // father
+        for (i = 0; i < PTX(UTOP); i++) {
+            duppage(newenvid, i);
+        }
+    }
 	//The parent installs pgfault using set_pgfault_handler
 
 	//alloc a new alloc
