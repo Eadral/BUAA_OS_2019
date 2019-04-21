@@ -63,6 +63,8 @@ u_int sys_getenvid(void)
  */
 void sys_yield(void)
 {
+    count = 0;
+    sched_yield();
 }
 
 /* Overview:
@@ -139,7 +141,16 @@ int sys_mem_alloc(int sysno, u_int envid, u_int va, u_int perm)
 	struct Env *env;
 	struct Page *ppage;
 	int ret;
-	ret = 0;
+    if (perm & PTE_V == 0 || perm & PTE_COW != 0) 
+        return -E_INVAL;
+	ret = page_alloc(&ppage);
+    ERRR(ret);
+    ret = envid2env(envid, &env, 1);
+    ERRR(ret);
+    ret = page_insert(env->env_cr3, ppage, va, perm);
+    ERRR(ret);
+
+    return 0;
 
 }
 
@@ -172,8 +183,16 @@ int sys_mem_map(int sysno, u_int srcid, u_int srcva, u_int dstid, u_int dstva,
 	round_dstva = ROUNDDOWN(dstva, BY2PG);
 
     //your code here
-
-	return ret;
+    if (perm & PTE_V == 0 || perm & PTE_COW != 0) 
+        return -E_INVAL;
+    ret = envid2env(srcid, &srcenv, 1);
+    ERRR(ret);
+    ret = envid2env(dstid, &dstenv, 1);
+    ERRR(ret);
+    ppage = pa2page(va2pa(dstid->env_cr3, round_dstva)); 
+    ret = page_insert(srcid->env_cr3, ppage, round_srcva, perm);
+    ERRR(ret);
+	return 0;
 }
 
 /* Overview:
@@ -190,8 +209,10 @@ int sys_mem_unmap(int sysno, u_int envid, u_int va)
 	// Your code here.
 	int ret;
 	struct Env *env;
-
-	return ret;
+    ret = envid2env(envid, &env, 1);
+    ERRR(ret);
+    page_remove(env->env_cr3, va);
+	return 0;
 	//	panic("sys_mem_unmap not implemented");
 }
 

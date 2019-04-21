@@ -12,7 +12,7 @@
  *  The variable which is for counting should be defined as 'static'.
  */
 
-u_long count = 0;
+static u_long count = 0;
 int c_list = 0;
 struct Env* env = NULL;
 
