@@ -33,6 +33,6 @@ void sched_yield(void) {
         } while (env->env_status != ENV_RUNNABLE);
     }
     count--;
-    //printf("@%d@\n", env->env_pri);
+    //printf("\n@%d@  ", env->env_pri);
     env_run(env);
 }

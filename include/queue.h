@@ -159,6 +159,7 @@
             if (t_page == NULL) {   \
                 LIST_FIRST(head) = elm;  \
                 (elm)->field.le_prev = &LIST_FIRST((head));   \
+                (elm)->field.le_next = NULL;  \
                 break;  \
             }   \
             while (LIST_NEXT((t_page), field) != NULL) t_page = LIST_NEXT((t_page), field);  \
