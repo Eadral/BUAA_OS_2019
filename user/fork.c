@@ -146,6 +146,10 @@ fork(void)
 	extern struct Env *env;
 	u_int i;
 
+	//The parent installs pgfault using set_pgfault_handler
+    set_pgfault_handler(0);
+	//alloc a new alloc
+
     newenvid = syscall_env_alloc();
     if (newenvid == 0) {
         // child
@@ -156,10 +160,8 @@ fork(void)
         for (i = 0; i < PTX(UTOP); i++) {
             duppage(newenvid, i);
         }
-    }
-	//The parent installs pgfault using set_pgfault_handler
 
-	//alloc a new alloc
+    }
 
 
 	return newenvid;
