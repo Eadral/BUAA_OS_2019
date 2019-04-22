@@ -42,6 +42,6 @@ run: all
 	gxemul -E testmips -C R3000 -M 64 gxemul/vmlinux
 
 debug: all
-	gxemul -E testmips -C R3000 -M 64 -v  -t gxemul/vmlinux  
+	gxemul -E testmips -C R3000 -M 64 -v -V -t gxemul/vmlinux  
 
 include include.mk

@@ -27,6 +27,8 @@ void mips_init()
 	
 	trap_init();
 	kclock_init();
+    
+    //ovov();
 
 	panic("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 	while(1);

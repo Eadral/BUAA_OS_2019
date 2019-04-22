@@ -153,7 +153,8 @@ END(do_refill)
 
 NESTED(do_exam, 0, sp)
 
-mfc0 t0, CP0_EPC
+//mfc0 t0, CP0_EPC
+lw t0, TF_EPC(sp)
 lw a0, (t0)
 srl a1, a0, 21
 and a1, a1, 0x1F
@@ -162,14 +163,23 @@ and a2, a2, 0x1F
 jal prt_exam
 nop
 
+lw t0, TF_EPC(sp)
 li t1, 0x1F
 sll t2, t1, 21
 and a0, a0, t2
 sll t2, t1, 16
 and a0, a0, t2
-sw a0, (t0)
+//sw a0, (t0)
+sw zero, TF_REG8(sp)
+sw zero, TF_REG9(sp)
+sw zero, TF_REG10(sp)
+sw zero, TF_REG11(sp)
+sw zero, TF_REG12(sp)
+sw zero, TF_REG13(sp)
+sw zero, TF_REG14(sp)
+sw zero, TF_REG15(sp)
 
-jal ov_check
+//jal ov_check
 nop
 
 jr ra
