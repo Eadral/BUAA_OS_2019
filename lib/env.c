@@ -262,6 +262,8 @@ static int load_icode_mapper(u_long va, u_int32_t sgsize,
         r = page_insert(pgdir, p, va+i, PTE_R);
         ERR(r);
         u_long partial = BY2PG - offset;
+        if (bin_size < partial)
+            partial = bin_size;
         bcopy(&bin[i], page2kva(p)+offset, partial);
         i += partial;
     }
@@ -326,7 +328,6 @@ load_icode(struct Env *e, u_char *binary, u_int size)
     /*Step 1: alloc a page. */
     r = page_alloc(&p);
     ERR(r);
-    p->pp_ref++;
 
     /*Step 2: Use appropriate perm to set initial stack for new Env. */
     /*Hint: The user-stack should be writable? */
@@ -441,6 +442,8 @@ env_destroy(struct Env *e)
 		printf("i am killed ... \n");
 		sched_yield();
 	}
+    
+
 }
 
 extern void env_pop_tf(struct Trapframe *tf, int id);

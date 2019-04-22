@@ -81,11 +81,17 @@ void user_bzero(void *v, u_int n)
 static void
 pgfault(u_int va)
 {
-	u_int *tmp;
+	u_int *ppte = 0;
+    int r;
 	//	writef("fork.c:pgfault():\t va:%x\n",va);
-    
+    r = pgdir_walk(curenv->env_cr3, va, 0, &ppte); 
+    ERR(r);
+    if (ppte & PTE_COW == 0) {
+        user_panic("not a copy-on-write page");
+    }
     //map the new page at a temporary place
-
+    u_int *tmp;
+    syscall_mem_alloc(curenv->env_id, va, PTE_V);
 	//copy the content
 	
     //map the page on the appropriate place
@@ -113,9 +119,17 @@ pgfault(u_int va)
 static void
 duppage(u_int envid, u_int pn)
 {
-	u_int addr;
-	u_int perm;
-
+    u_int pte = (*vpt)[pn];
+	u_int addr = PTE_ADDR(pte);
+	u_int perm = pte & 0xFFF;
+    
+    if (perm & PTE_V && (perm & PTE_COW || perm & PTE_R)) {
+        syscall_mem_map(0, addr, envid, addr, perm | PTE_COW); 
+        syscall_mem_map(0, addr, 0, addr, perm | PTE_COW);
+    } else {
+        syscall_mem_map(0, addr, envid, addr, perm); 
+    }
+    
 	//	user_panic("duppage not implemented");
 }
 
@@ -138,10 +152,22 @@ fork(void)
 	extern struct Env *env;
 	u_int i;
 
-
 	//The parent installs pgfault using set_pgfault_handler
-
+    set_pgfault_handler(0);
 	//alloc a new alloc
+
+    newenvid = syscall_env_alloc();
+    if (newenvid == 0) {
+        // child
+        
+        return 0;
+    } else {
+        // father
+        for (i = 0; i < PTX(UTOP); i++) {
+            duppage(newenvid, i);
+        }
+
+    }
 
 
 	return newenvid;

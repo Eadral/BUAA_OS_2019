@@ -4,6 +4,7 @@
 #include <printf.h>
 #include <pmap.h>
 #include <sched.h>
+#include <meow.h>
 
 extern char *KERNEL_SP;
 extern struct Env *curenv;
@@ -57,12 +58,17 @@ u_int sys_getenvid(void)
 
 /* Overview:
  *	This function enables the current process to give up CPU.
- *
+ * 
  * Post-Condition:
  * 	Deschedule current environment. This function will never return.
  */
 void sys_yield(void)
 {
+    
+	bcopy((void *)KERNEL_SP - sizeof(struct Trapframe),
+		  (void *)TIMESTACK - sizeof(struct Trapframe),
+		  sizeof(struct Trapframe));
+    sched_yield();
 }
 
 /* Overview:
@@ -111,6 +117,11 @@ int sys_set_pgfault_handler(int sysno, u_int envid, u_int func, u_int xstacktop)
 	struct Env *env;
 	int ret;
 
+    ret = envid2env(envid, &env, 1);
+    ERRR(ret);
+    env->env_pgfault_handler = func;
+    env->env_xstacktop = xstacktop;
+
 
 	return 0;
 	//	panic("sys_set_pgfault_handler not implemented");
@@ -139,7 +150,16 @@ int sys_mem_alloc(int sysno, u_int envid, u_int va, u_int perm)
 	struct Env *env;
 	struct Page *ppage;
 	int ret;
-	ret = 0;
+    if (perm & PTE_V == 0 || perm & PTE_COW != 0) 
+        return -E_INVAL;
+	ret = page_alloc(&ppage);
+    ERRR(ret);
+    ret = envid2env(envid, &env, 1);
+    ERRR(ret);
+    ret = page_insert(env->env_cr3, ppage, va, perm);
+    ERRR(ret);
+
+    return 0;
 
 }
 
@@ -172,8 +192,16 @@ int sys_mem_map(int sysno, u_int srcid, u_int srcva, u_int dstid, u_int dstva,
 	round_dstva = ROUNDDOWN(dstva, BY2PG);
 
     //your code here
-
-	return ret;
+    if (perm & PTE_V == 0 || perm & PTE_COW != 0) 
+        return -E_INVAL;
+    ret = envid2env(srcid, &srcenv, 1);
+    ERRR(ret);
+    ret = envid2env(dstid, &dstenv, 1);
+    ERRR(ret);
+    ppage = pa2page(va2pa(srcenv->env_cr3, round_srcva)); 
+    ret = page_insert(dstenv->env_cr3, ppage, round_dstva, perm);
+    ERRR(ret);
+	return 0;
 }
 
 /* Overview:
@@ -190,8 +218,10 @@ int sys_mem_unmap(int sysno, u_int envid, u_int va)
 	// Your code here.
 	int ret;
 	struct Env *env;
-
-	return ret;
+    ret = envid2env(envid, &env, 1);
+    ERRR(ret);
+    page_remove(env->env_cr3, va);
+	return 0;
 	//	panic("sys_mem_unmap not implemented");
 }
 
@@ -212,7 +242,18 @@ int sys_env_alloc(void)
 	// Your code here.
 	int r;
 	struct Env *e;
+    r = env_alloc(&e, curenv->env_id);
+    ERRR(r);
+	bcopy((void *)KERNEL_SP - sizeof(struct Trapframe),
+		  &(e->env_tf),
+		  sizeof(struct Trapframe));
+    
+    e->env_tf.pc = e->env_tf.cp0_epc;
 
+    e->env_tf.regs[0] = 0;
+    
+    e->env_status = ENV_NOT_RUNNABLE;
+    
 
 	return e->env_id;
 	//	panic("sys_env_alloc not implemented");
@@ -288,6 +329,13 @@ void sys_panic(int sysno, char *msg)
  */
 void sys_ipc_recv(int sysno, u_int dstva)
 {
+    if (dstva >= UTOP) {
+        panic("sys_ipc_recv: invaild dstva");
+    }
+    curenv->env_ipc_recving = 1;
+    curenv->env_ipc_dstva = dstva;
+    curenv->env_status = ENV_NOT_RUNNABLE;
+    sched_yield();
 }
 
 /* Overview:
@@ -314,6 +362,21 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
 	int r;
 	struct Env *e;
 	struct Page *p;
+    r = envid2env(envid, &e, 1);
+    ERRR(r);
+    if (e->env_ipc_recving != 1) {
+        return -E_IPC_NOT_RECV;
+    }
+    e->env_ipc_recving = 0;
+    e->env_ipc_from = curenv->env_id;
+    e->env_ipc_value = value;
+    e->env_status = ENV_RUNNABLE;
+
+    if (srcva != 0) {
+        sys_mem_map(sysno, curenv->env_id, srcva, envid, e->env_ipc_dstva, perm);
+        e->env_ipc_perm = perm;
+    }
+        
 
 	return 0;
 }
