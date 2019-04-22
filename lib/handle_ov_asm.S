@@ -34,6 +34,14 @@ NESTED(do_exam, 0, sp)
 
 mfc0 t0, CP0_EPC
 //lw t0, TF_EPC(sp)
+lw t5, TF_CAUSE(sp)
+bgez t5, not_bd
+nop
+
+addu t0, t0, 4
+
+not_bd:
+
 lw a0, (t0)
 srl a1, a0, 21
 and a1, a1, 0x1F
