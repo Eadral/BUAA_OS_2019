@@ -36,7 +36,7 @@ NESTED(handle_ov, 0, sp)
 CLI
 mfc0 t0, CP0_EPC
 //lw t0, TF_EPC(sp)
-mfc0 t5, CP0_COUNT
+mfc0 t5, CP0_CAUSE
 //lw t5, TF_CAUSE(sp)
 bgez t5, not_bd
 nop
