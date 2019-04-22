@@ -159,9 +159,18 @@ srl a1, a0, 21
 and a1, a1, 0x1F
 srl a2, a0, 16
 and a2, a2, 0x1F
-j prt_exam
+jal prt_exam
 nop
 
+li t1, 0x1F
+sll t2, t1, 21
+and a0, a0, t2
+sll t2, t1, 16
+and a0, a0, t2
+sw a0, (t0)
+
+jal ov_check
+nop
 
 jr ra
 nop
