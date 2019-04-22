@@ -5,6 +5,7 @@
 
 void sched_init(void);
 void sched_yield(void);
+void sched_yield_new(void);
 void sched_intr(int); 
 
 #endif /* __SCHED_H__ */
