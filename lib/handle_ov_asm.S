@@ -30,11 +30,15 @@ nop
 .endm
 
 
-NESTED(do_exam, 0, sp)
+//NESTED(do_exam, 0, sp)
+NESTED(handle_ov, 0, sp)
+SAVE_ALL
 
+CLI
 mfc0 t0, CP0_EPC
 //lw t0, TF_EPC(sp)
-lw t5, TF_CAUSE(sp)
+mfc0 t5, CP0_COUNT
+//lw t5, TF_CAUSE(sp)
 bgez t5, not_bd
 nop
 
@@ -50,28 +54,36 @@ and a2, a2, 0x1F
 jal prt_exam
 nop
 
-lw t0, TF_EPC(sp)
-li t1, 0x1F
-sll t2, t1, 21
-and a0, a0, t2
-sll t2, t1, 16
-and a0, a0, t2
-//sw a0, (t0)
+RESTORE_ALL
 
-sw zero, TF_REG8(sp)
-sw zero, TF_REG9(sp)
-sw zero, TF_REG10(sp)
-sw zero, TF_REG11(sp)
-sw zero, TF_REG12(sp)
-sw zero, TF_REG13(sp)
-sw zero, TF_REG14(sp)
-sw zero, TF_REG15(sp)
+li t0, 0
+li t1, 0
+li t2, 0
+li t3, 0
+li t4, 0
+li t5, 0
+li t6, 0
+li t7, 0
+//sw zero, TF_REG8(sp)
+//sw zero, TF_REG9(sp)
+//sw zero, TF_REG10(sp)
+//sw zero, TF_REG11(sp)
+//sw zero, TF_REG12(sp)
+//sw zero, TF_REG13(sp)
+//sw zero, TF_REG14(sp)
+//sw zero, TF_REG15(sp)
 
 jal ov_check
 nop
 
+mfc0 k0, CP0_EPC
+jr k0
+rfe
+
 j ret_from_exception
 nop
-END(do_exam)
 
-BUILD_HANDLER ov do_exam cli
+//END(do_exam)
+END(handle_ov)
+
+//BUILD_HANDLER ov do_exam cli
