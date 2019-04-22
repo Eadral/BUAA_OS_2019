@@ -59,6 +59,7 @@ void env_destroy(struct Env *e);
 int envid2env(u_int envid, struct Env **penv, int checkperm);
 void env_run(struct Env *e);
 
+void prt_exam(u_int, u_int, u_int);
 
 // for the grading script
 #define ENV_CREATE2(x, y) \

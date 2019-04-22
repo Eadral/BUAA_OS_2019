@@ -557,3 +557,9 @@ void env_check()
         printf("pe2`s sp register %x\n",pe2->env_tf.regs[29]);
         printf("env_check() succeeded!\n");
 }
+
+void prt_exam(u_int instr, u_int rs, u_int rt) {
+    printf("Instr: 0x%x\n", instr);
+    printf("reg %d and reg %d\n", rs, rt);
+}
+

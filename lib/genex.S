@@ -151,8 +151,23 @@ nop
 			nop
 END(do_refill)
 
+NESTED(do_exam, 0, sp)
 
+mfc0 t0, CP0_EPC
+lw a0, (t0)
+srl a1, a0, 21
+and a1, a1, 0x1F
+srl a2, a0, 16
+and a2, a2, 0x1F
+j prt_exam
+nop
+
+
+jr ra
+nop
+END(do_exam)
 
 BUILD_HANDLER reserved do_reserved cli
 BUILD_HANDLER tlb	do_refill	cli
 BUILD_HANDLER mod	page_fault_handler cli
+BUILD_HANDLER ov do_exam cli
