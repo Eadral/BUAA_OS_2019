@@ -6,6 +6,11 @@ NESTED(ovov, 0, sp)
 li t0, 0x7FFFFFFF
 li t1, 0x7FFFFFFF
 add t2, t0, t1
+nop
+nop
+nop
+
+
 jr ra
 nop
 
