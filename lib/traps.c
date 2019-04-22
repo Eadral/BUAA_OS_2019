@@ -7,6 +7,7 @@ extern void handle_reserved();
 extern void handle_tlb();
 extern void handle_sys();
 extern void handle_mod();
+extern void handle_ov();
 unsigned long exception_handlers[32];
 void trap_init(){
 	int i;
@@ -16,6 +17,7 @@ void trap_init(){
 	set_except_vector(1, handle_mod);
 	set_except_vector(2, handle_tlb);
 	set_except_vector(3, handle_tlb);
+	set_except_vector(4, handle_ov);
 	set_except_vector(8, handle_sys);
 }
 void *set_except_vector(int n, void * addr){
