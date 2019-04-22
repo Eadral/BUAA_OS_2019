@@ -32,7 +32,6 @@ nop
 
 //NESTED(do_exam, 0, sp)
 NESTED(handle_ov, 0, sp)
-SAVE_ALL
 
 CLI
 mfc0 t0, CP0_EPC
@@ -54,7 +53,6 @@ and a2, a2, 0x1F
 jal prt_exam
 nop
 
-RESTORE_ALL
 
 li t0, 0
 li t1, 0
@@ -76,12 +74,12 @@ li t7, 0
 jal ov_check
 nop
 
+STI
+
 mfc0 k0, CP0_EPC
 jr k0
 rfe
 
-j ret_from_exception
-nop
 
 //END(do_exam)
 END(handle_ov)
