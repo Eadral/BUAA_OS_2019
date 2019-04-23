@@ -156,7 +156,7 @@ int sys_mem_alloc(int sysno, u_int envid, u_int va, u_int perm)
     ERRR(ret);
     ret = envid2env(envid, &env, 1);
     ERRR(ret);
-    ret = page_insert(env->env_cr3, ppage, va, perm);
+    ret = page_insert(env->env_pgdir, ppage, va, perm);
     ERRR(ret);
 
     return 0;
@@ -198,8 +198,8 @@ int sys_mem_map(int sysno, u_int srcid, u_int srcva, u_int dstid, u_int dstva,
     ERRR(ret);
     ret = envid2env(dstid, &dstenv, 1);
     ERRR(ret);
-    ppage = pa2page(va2pa(srcenv->env_cr3, round_srcva)); 
-    ret = page_insert(dstenv->env_cr3, ppage, round_dstva, perm);
+    ppage = page_lookup(srcenv->env_pgdir, round_srcva, 0); 
+    ret = page_insert(dstenv->env_pgdir, ppage, round_dstva, perm);
     ERRR(ret);
 	return 0;
 }
@@ -220,7 +220,7 @@ int sys_mem_unmap(int sysno, u_int envid, u_int va)
 	struct Env *env;
     ret = envid2env(envid, &env, 1);
     ERRR(ret);
-    page_remove(env->env_cr3, va);
+    page_remove(env->env_pgdir, va);
 	return 0;
 	//	panic("sys_mem_unmap not implemented");
 }
