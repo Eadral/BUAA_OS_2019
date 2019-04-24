@@ -391,7 +391,6 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
     r = envid2env(envid, &e, 0);
     ERR(r);
     if (e->env_ipc_recving != 1) {
-        panic(sys_ipc_can_send);
         return -E_IPC_NOT_RECV;
     }
     e->env_ipc_recving = 0;
