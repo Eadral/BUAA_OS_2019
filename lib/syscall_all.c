@@ -118,7 +118,7 @@ int sys_set_pgfault_handler(int sysno, u_int envid, u_int func, u_int xstacktop)
 	int ret;
 
     ret = envid2env(envid, &env, 1);
-    ERRR(ret);
+    ERR(ret);
     env->env_pgfault_handler = func;
     env->env_xstacktop = xstacktop;
 
@@ -153,14 +153,16 @@ int sys_mem_alloc(int sysno, u_int envid, u_int va, u_int perm)
     if (va >= UTOP) {
         panic("va > UTOP");
     }
-    if (perm & PTE_V == 0 || perm & PTE_COW != 0) 
+    if (perm & PTE_V == 0) {
+        panic("sys_mem_alloc");
         return -E_INVAL;
+    } 
 	ret = page_alloc(&ppage);
-    ERRR(ret);
+    ERR(ret);
     ret = envid2env(envid, &env, 1);
-    ERRR(ret);
+    ERR(ret);
     ret = page_insert(env->env_pgdir, ppage, va, perm);
-    ERRR(ret);
+    ERR(ret);
 
     return 0;
 
@@ -195,19 +197,21 @@ int sys_mem_map(int sysno, u_int srcid, u_int srcva, u_int dstid, u_int dstva,
 	round_dstva = ROUNDDOWN(dstva, BY2PG);
 
     //your code here
-    if (perm & PTE_V == 0 || perm & PTE_COW != 0) 
+    if (perm & PTE_V == 0) {
+        panic("sys_mem_map");
         return -E_INVAL;
+    }
     ret = envid2env(srcid, &srcenv, 1);
-    ERRR(ret);
+    ERR(ret);
     ret = envid2env(dstid, &dstenv, 1);
-    ERRR(ret);
+    ERR(ret);
     ppage = page_lookup(srcenv->env_pgdir, round_srcva, 0);
     if (ppage == 0) {
         panic("ppage is 0");
         
     }
     ret = page_insert(dstenv->env_pgdir, ppage, round_dstva, perm);
-    ERRR(ret);
+    ERR(ret);
 	return 0;
 }
 
@@ -226,7 +230,7 @@ int sys_mem_unmap(int sysno, u_int envid, u_int va)
 	int ret;
 	struct Env *env;
     ret = envid2env(envid, &env, 1);
-    ERRR(ret);
+    ERR(ret);
     page_remove(env->env_pgdir, va);
 	return 0;
 	//	panic("sys_mem_unmap not implemented");
@@ -250,7 +254,7 @@ int sys_env_alloc(void)
 	int r;
 	struct Env *e;
     r = env_alloc(&e, curenv->env_id);
-    ERRR(r);
+    ERR(r);
 	bcopy((void *)KERNEL_SP - sizeof(struct Trapframe),
 		  &(e->env_tf),
 		  sizeof(struct Trapframe));
@@ -260,7 +264,8 @@ int sys_env_alloc(void)
     e->env_tf.regs[2] = 0;
     
     e->env_status = ENV_NOT_RUNNABLE;
-    
+   
+    e->env_pri = curenv->env_pri;
 
 	return e->env_id;
 	//	panic("sys_env_alloc not implemented");
@@ -287,7 +292,10 @@ int sys_set_env_status(int sysno, u_int envid, u_int status)
     ERR(ret); 
     u_int old_status = env->env_status;
     if (!(old_status == ENV_RUNNABLE || old_status == ENV_NOT_RUNNABLE || old_status == ENV_FREE)) 
+    {
+        panic("sys_set_env_status");
         return -E_INVAL;
+    }    
 
     env->env_status = status;
 
@@ -381,8 +389,9 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
 	struct Env *e;
 	struct Page *p;
     r = envid2env(envid, &e, 0);
-    ERRR(r);
+    ERR(r);
     if (e->env_ipc_recving != 1) {
+        panic(sys_ipc_can_send);
         return -E_IPC_NOT_RECV;
     }
     e->env_ipc_recving = 0;

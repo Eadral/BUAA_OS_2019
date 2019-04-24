@@ -82,27 +82,35 @@ void user_bzero(void *v, u_int n)
 static void
 pgfault(u_int va)
 {
-	u_int *ppte = 0;
+    //writef("pgfault at %x\n", va);
+	u_int pte = 0;
     int r;
 	//	writef("fork.c:pgfault():\t va:%x\n",va);
-    ppte = &(*vpt)[VPN(va)]; 
-    if (*ppte & PTE_COW == 0) {
+    pte = (*vpt)[VPN(va)]; 
+    u_int perm = pte & 0xFFF;
+    if (pte & PTE_COW == 0) {
         user_panic("not a copy-on-write page");
     }
+    //writef("%x %x\n", va,PTE_ADDR((*vpt)[VPN(va)]) );
+    //return;
+
     va = ROUNDDOWN(va, BY2PG);
     //map the new page at a temporary place
-    u_int tmp = UXSTACKTOP - 2*BY2PG;
-    r = syscall_mem_alloc(0, tmp, PTE_V | PTE_R);
+    //u_int tmp = UXSTACKTOP - BY2PG;
+
+    u_int tmp = UTEXT - BY2PG;
+    r = syscall_mem_alloc(0, tmp, perm & (~PTE_COW));
 	UERR(r);
     //copy the content
     user_bcopy(va, tmp, BY2PG);
     //map the page on the appropriate place
-    r = syscall_mem_map(0, tmp, 0, va, PTE_V | PTE_R);	
+    r = syscall_mem_map(0, tmp, 0, va, perm & (~PTE_COW));	
     UERR(r);
     //unmap the temporary place
     r = syscall_mem_unmap(0, tmp);
     UERR(r);
 
+    //writef("%x\n", PTE_ADDR((*vpt)[VPN(va)]));
 }
 
 /* Overview:
@@ -128,7 +136,7 @@ duppage(u_int envid, u_int pn)
 	u_int addr = pn * BY2PG;
 	u_int perm = pte & 0xFFF;
     
-    if (perm & PTE_V && (perm & PTE_COW || perm & PTE_R)) {
+    if ((perm & PTE_V) && ((perm & PTE_COW) || (perm & PTE_R))) {
         syscall_mem_map(0, addr, envid, addr, perm | PTE_COW); 
         syscall_mem_map(0, addr, 0, addr, perm | PTE_COW);
     } else {
@@ -163,12 +171,15 @@ fork(void)
     newenvid = syscall_env_alloc();
     if (newenvid == 0) {
         // child
-        env = &envs[ENVX(syscall_getenvid())]; 
+        env = &envs[ENVX(syscall_getenvid())];
+        //USTOP();
         return 0;
     } else {
         // father
-        for (i = 0; i < PTX(UTOP); i++) {
-            duppage(newenvid, i);
+        for (i = 0; i < UTOP-2*BY2PG; i+=BY2PG) {
+            if(((*vpd)[VPN(i)/1024])!=0 && ((*vpt)[VPN(i)])!=0) {
+                duppage(newenvid, VPN(i));
+            }
         }
         int r;
         r = syscall_mem_alloc(newenvid, UXSTACKTOP - BY2PG, PTE_V | PTE_R);

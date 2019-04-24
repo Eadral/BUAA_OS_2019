@@ -286,6 +286,7 @@ static int load_icode_mapper(u_long va, u_int32_t sgsize,
         ERR(r);
         u_long partial = bin_size-i;
         bcopy(&bin[i], page2kva(p), partial);
+        i += BY2PG;
     }
 	/*Step 2: alloc pages to reach `sgsize` when `bin_size` < `sgsize`.
     * i has the value of `bin_size` now. */

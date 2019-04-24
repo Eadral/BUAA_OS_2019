@@ -10,6 +10,11 @@
         while(1);               \
     } while(0)      
 
+#define USTOP()                  \
+    do {                        \
+        writef("MEOW!");        \
+        while(1);               \
+    } while(0)      
 
 #define ERR(x)                                                      \
     do {                                                            \

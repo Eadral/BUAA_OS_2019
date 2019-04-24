@@ -4,6 +4,8 @@
 #include <printf.h>
 #include <kclock.h>
 #include <trap.h>
+#include <mmu.h>
+#include "meow.h"
 
 extern char aoutcode[];
 extern char boutcode[];
@@ -18,14 +20,14 @@ void mips_init()
 	
 	env_init();
     
-    ENV_CREATE_PRIORITY(user_A, 1);
-    ENV_CREATE_PRIORITY(user_B, 2);
-	//ENV_CREATE(user_fktest);
+    //ENV_CREATE_PRIORITY(user_A, 1);
+    //ENV_CREATE_PRIORITY(user_B, 2);
+	ENV_CREATE(user_fktest);
 	//ENV_CREATE(user_pingpong);
 	
     trap_init();
 	kclock_init();
-
+    
 	
 	while(1);
 	panic("init.c:\tend of mips_init() reached!");

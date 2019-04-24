@@ -20,6 +20,7 @@ void sched_yield(void) {
     if (count == 0) {
         e = LIST_FIRST(&env_sched_list[c_list]);
         do {
+                //printf("x");
             if (e == NULL) {
                 panic("no runnable process\n");   
             }
@@ -32,6 +33,11 @@ void sched_yield(void) {
         } while (e->env_status != ENV_RUNNABLE);
     }
     count--;
-    //printf("\n@%d@  ", env->env_pri);
+    //printf("\n@%d@  ", env->env_id);
+    //struct Env* t = NULL;
+    //LIST_FOREACH(t, &env_sched_list[c_list], env_sched_link) {
+    //    printf("$%d %d,", t->env_id, t->env_status);
+    //}
+    //printf("c_list: %d \n", c_list);
     env_run(e);
 }
