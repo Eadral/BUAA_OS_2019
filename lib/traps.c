@@ -58,10 +58,10 @@ page_fault_handler(struct Trapframe *tf)
         tf->regs[29] <= (curenv->env_xstacktop - 1)) {
             tf->regs[29] = tf->regs[29] - sizeof(struct  Trapframe);
             bcopy(&PgTrapFrame, (void *)tf->regs[29], sizeof(struct Trapframe));
-        } else {
+    } else {
             tf->regs[29] = curenv->env_xstacktop - sizeof(struct  Trapframe);
             bcopy(&PgTrapFrame,(void *)curenv->env_xstacktop - sizeof(struct  Trapframe),sizeof(struct Trapframe));
-        }
+    }
     // TODO: Set EPC to a proper value in the trapframe
     tf->cp0_epc = curenv->env_pgfault_handler;
 

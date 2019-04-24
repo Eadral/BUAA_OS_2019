@@ -14,24 +14,24 @@
 
 static u_long count = 0;
 int c_list = 0;
-struct Env* env = NULL;
+struct Env* e = NULL;
 
 void sched_yield(void) {
     if (count == 0) {
-        env = LIST_FIRST(&env_sched_list[c_list]);
+        e = LIST_FIRST(&env_sched_list[c_list]);
         do {
-            if (env == NULL) {
+            if (e == NULL) {
                 panic("no runnable process\n");   
             }
-            count = env->env_pri;
-            LIST_REMOVE(env, env_sched_link);
-            LIST_INSERT_HEAD(&env_sched_list[1 - c_list], env, env_sched_link);
+            count = e->env_pri;
+            LIST_REMOVE(e, env_sched_link);
+            LIST_INSERT_HEAD(&env_sched_list[1 - c_list], e, env_sched_link);
             if (LIST_EMPTY(&env_sched_list[c_list])) {
                 c_list = 1 - c_list;
             }
-        } while (env->env_status != ENV_RUNNABLE);
+        } while (e->env_status != ENV_RUNNABLE);
     }
     count--;
     //printf("\n@%d@  ", env->env_pri);
-    env_run(env);
+    env_run(e);
 }

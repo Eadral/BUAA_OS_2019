@@ -20,6 +20,13 @@
     } while(0)                                                        
 
 
+#define UERR(x)                                                      \
+    do {                                                            \
+        if ((x) < 0) {                                              \
+            user_panic("@%d: retrun %d\n", __LINE__, x);                 \
+            return x;                                               \
+        }                                                           \
+    } while(0)                                                        
 
 #define ERRR(x)                                                      \
     do {                                                            \

@@ -3,6 +3,7 @@
 #include "lib.h"
 #include <mmu.h>
 #include <env.h>
+#include "meow.h"
 
 
 /* ----------------- help functions ---------------- */
@@ -84,20 +85,24 @@ pgfault(u_int va)
 	u_int *ppte = 0;
     int r;
 	//	writef("fork.c:pgfault():\t va:%x\n",va);
-    r = pgdir_walk(curenv->env_cr3, va, 0, &ppte); 
-    ERR(r);
-    if (ppte & PTE_COW == 0) {
+    ppte = &(*vpt)[VPN(va)]; 
+    if (*ppte & PTE_COW == 0) {
         user_panic("not a copy-on-write page");
     }
+    va = ROUNDDOWN(va, BY2PG);
     //map the new page at a temporary place
-    u_int *tmp;
-    syscall_mem_alloc(curenv->env_id, va, PTE_V);
-	//copy the content
-	
+    u_int tmp = UXSTACKTOP - 2*BY2PG;
+    r = syscall_mem_alloc(0, tmp, PTE_V | PTE_R);
+	UERR(r);
+    //copy the content
+    user_bcopy(va, tmp, BY2PG);
     //map the page on the appropriate place
-	
+    r = syscall_mem_map(0, tmp, 0, va, PTE_V | PTE_R);	
+    UERR(r);
     //unmap the temporary place
-	
+    r = syscall_mem_unmap(0, tmp);
+    UERR(r);
+
 }
 
 /* Overview:
@@ -120,7 +125,7 @@ static void
 duppage(u_int envid, u_int pn)
 {
     u_int pte = (*vpt)[pn];
-	u_int addr = PTE_ADDR(pte);
+	u_int addr = pn * BY2PG;
 	u_int perm = pte & 0xFFF;
     
     if (perm & PTE_V && (perm & PTE_COW || perm & PTE_R)) {
@@ -153,20 +158,25 @@ fork(void)
 	u_int i;
 
 	//The parent installs pgfault using set_pgfault_handler
-    set_pgfault_handler(0);
+    set_pgfault_handler(pgfault);
 	//alloc a new alloc
-
     newenvid = syscall_env_alloc();
     if (newenvid == 0) {
         // child
-        
+        env = &envs[ENVX(syscall_getenvid())]; 
         return 0;
     } else {
         // father
         for (i = 0; i < PTX(UTOP); i++) {
             duppage(newenvid, i);
         }
-
+        int r;
+        r = syscall_mem_alloc(newenvid, UXSTACKTOP - BY2PG, PTE_V | PTE_R);
+        UERR(r);
+        r = syscall_set_pgfault_handler(newenvid, __asm_pgfault_handler, UXSTACKTOP);
+        UERR(r);
+        r = syscall_set_env_status(newenvid, ENV_RUNNABLE); 
+        UERR(r);
     }
 
 

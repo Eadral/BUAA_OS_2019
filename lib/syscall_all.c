@@ -150,6 +150,9 @@ int sys_mem_alloc(int sysno, u_int envid, u_int va, u_int perm)
 	struct Env *env;
 	struct Page *ppage;
 	int ret;
+    if (va >= UTOP) {
+        panic("va > UTOP");
+    }
     if (perm & PTE_V == 0 || perm & PTE_COW != 0) 
         return -E_INVAL;
 	ret = page_alloc(&ppage);
@@ -198,7 +201,11 @@ int sys_mem_map(int sysno, u_int srcid, u_int srcva, u_int dstid, u_int dstva,
     ERRR(ret);
     ret = envid2env(dstid, &dstenv, 1);
     ERRR(ret);
-    ppage = page_lookup(srcenv->env_pgdir, round_srcva, 0); 
+    ppage = page_lookup(srcenv->env_pgdir, round_srcva, 0);
+    if (ppage == 0) {
+        panic("ppage is 0");
+        
+    }
     ret = page_insert(dstenv->env_pgdir, ppage, round_dstva, perm);
     ERRR(ret);
 	return 0;
@@ -250,7 +257,7 @@ int sys_env_alloc(void)
     
     e->env_tf.pc = e->env_tf.cp0_epc;
 
-    e->env_tf.regs[0] = 0;
+    e->env_tf.regs[2] = 0;
     
     e->env_status = ENV_NOT_RUNNABLE;
     
@@ -276,7 +283,18 @@ int sys_set_env_status(int sysno, u_int envid, u_int status)
 	// Your code here.
 	struct Env *env;
 	int ret;
+    ret = envid2env(envid, &env, 1); 
+    ERR(ret); 
+    u_int old_status = env->env_status;
+    if (!(old_status == ENV_RUNNABLE || old_status == ENV_NOT_RUNNABLE || old_status == ENV_FREE)) 
+        return -E_INVAL;
 
+    env->env_status = status;
+
+    if (status == ENV_RUNNABLE) {
+        LIST_INSERT_HEAD(&env_sched_list[0], env, env_sched_link);
+    }
+        
 	return 0;
 	//	panic("sys_env_set_status not implemented");
 }
@@ -362,7 +380,7 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
 	int r;
 	struct Env *e;
 	struct Page *p;
-    r = envid2env(envid, &e, 1);
+    r = envid2env(envid, &e, 0);
     ERRR(r);
     if (e->env_ipc_recving != 1) {
         return -E_IPC_NOT_RECV;
@@ -371,10 +389,10 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
     e->env_ipc_from = curenv->env_id;
     e->env_ipc_value = value;
     e->env_status = ENV_RUNNABLE;
-
+    e->env_ipc_perm = perm;
+    
     if (srcva != 0) {
         sys_mem_map(sysno, curenv->env_id, srcva, envid, e->env_ipc_dstva, perm);
-        e->env_ipc_perm = perm;
     }
         
 
