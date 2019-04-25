@@ -26,7 +26,7 @@ void sched_yield(void) {
             }
             count = e->env_pri;
             LIST_REMOVE(e, env_sched_link);
-            LIST_INSERT_TAIL(&env_sched_list[1 - c_list], e, env_sched_link);
+            LIST_INSERT_HEAD(&env_sched_list[1 - c_list], e, env_sched_link);
             if (LIST_EMPTY(&env_sched_list[c_list])) {
                 c_list = 1 - c_list;
             }
