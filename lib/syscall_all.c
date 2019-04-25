@@ -321,7 +321,7 @@ int sys_set_env_status(int sysno, u_int envid, u_int status)
  */
 int sys_set_trapframe(int sysno, u_int envid, struct Trapframe *tf)
 {
-
+    panic("sys_set_trapframe");
 	return 0;
 }
 

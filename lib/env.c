@@ -487,6 +487,7 @@ env_run(struct Env *e)
      * the   environment.
      */
     /* Hint: You should use GET_ENV_ASID there.Think why? */
+    printf("pc %x epc %x, ", e->env_tf.pc, e->env_tf.cp0_epc);
 
     env_pop_tf(&(e->env_tf), GET_ENV_ASID(e->env_id));
 

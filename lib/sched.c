@@ -13,20 +13,20 @@
  */
 
 static u_long count = 0;
-int c_list = 0;
-struct Env* e = NULL;
+static int c_list = 0;
+static struct Env* e = NULL;
 
 void sched_yield(void) {
-    if (count == 0) {
-        e = LIST_FIRST(&env_sched_list[c_list]);
+    if (count == 0 || e->env_status == ENV_NOT_RUNNABLE) {
         do {
                 //printf("x");
+            e = LIST_FIRST(&env_sched_list[c_list]);
             if (e == NULL) {
                 panic("no runnable process\n");   
             }
             count = e->env_pri;
             LIST_REMOVE(e, env_sched_link);
-            LIST_INSERT_HEAD(&env_sched_list[1 - c_list], e, env_sched_link);
+            LIST_INSERT_TAIL(&env_sched_list[1 - c_list], e, env_sched_link);
             if (LIST_EMPTY(&env_sched_list[c_list])) {
                 c_list = 1 - c_list;
             }
@@ -39,5 +39,6 @@ void sched_yield(void) {
     //    printf("$%d %d,", t->env_id, t->env_status);
     //}
     //printf("c_list: %d \n", c_list);
+    //printf("pc: %x ", e->env_tf.pc);
     env_run(e);
 }
