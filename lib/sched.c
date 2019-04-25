@@ -34,7 +34,7 @@ void sched_yield(void) {
             if (LIST_EMPTY(&env_sched_list[c_list])) {
                 c_list = 1 - c_list;
             }
-        } while (0);
+        } while (e->env_status != ENV_RUNNABLE);
     }
     count--;
     //printf("\n@%d@  ", env->env_id);

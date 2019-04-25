@@ -406,8 +406,13 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
     e->env_ipc_perm = perm;
 
     if (srcva != 0) {
-        //FIXME
-        sys_mem_map(sysno, curenv->env_id, srcva, envid, e->env_ipc_dstva, perm);
+        //sys_mem_map(sysno, curenv->env_id, srcva, envid, e->env_ipc_dstva, perm);
+        p = page_lookup(curenv->env_pgdir, srcva, 0);
+        if (p == 0)
+            panic("p is 0");
+        r = page_insert(e->env_pgdir, p, e->env_ipc_dstva, perm);
+        ERR(r);
+
     }
         
 
