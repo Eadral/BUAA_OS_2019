@@ -22,7 +22,11 @@ void sched_yield(void) {
                 //printf("x");
             e = LIST_FIRST(&env_sched_list[c_list]);
             if (e == NULL) {
-                panic("no runnable process\n");   
+                if (!LIST_EMPTY(&env_sched_list[1 - c_list])) {
+                    c_list = 1 - c_list;
+                    e = LIST_FIRST(&env_sched_list[c_list]);
+                } else
+                    panic("no runnable process\n");   
             }
             count = e->env_pri;
             LIST_REMOVE(e, env_sched_link);
@@ -30,7 +34,7 @@ void sched_yield(void) {
             if (LIST_EMPTY(&env_sched_list[c_list])) {
                 c_list = 1 - c_list;
             }
-        } while (e->env_status != ENV_RUNNABLE);
+        } while (0);
     }
     count--;
     //printf("\n@%d@  ", env->env_id);

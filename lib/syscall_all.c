@@ -302,6 +302,9 @@ int sys_set_env_status(int sysno, u_int envid, u_int status)
     if (status == ENV_RUNNABLE) {
         LIST_INSERT_HEAD(&env_sched_list[0], env, env_sched_link);
     }
+    if (status == ENV_NOT_RUNNABLE) {
+        LIST_REMOVE(env, env_sched_link);
+    }
         
 	return 0;
 	//	panic("sys_env_set_status not implemented");
@@ -360,7 +363,8 @@ void sys_ipc_recv(int sysno, u_int dstva)
     }
     curenv->env_ipc_recving = 1;
     curenv->env_ipc_dstva = dstva;
-    curenv->env_status = ENV_NOT_RUNNABLE;
+    //curenv->env_status = ENV_NOT_RUNNABLE;
+    sys_set_env_status(sysno, curenv->env_id, ENV_NOT_RUNNABLE);
     sys_yield();
     //sched_yield();
 }
@@ -398,9 +402,11 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
     e->env_ipc_from = curenv->env_id;
     e->env_ipc_value = value;
     e->env_status = ENV_RUNNABLE;
+    LIST_INSERT_HEAD(&env_sched_list[0], e, env_sched_link);
     e->env_ipc_perm = perm;
 
     if (srcva != 0) {
+        //FIXME
         sys_mem_map(sysno, curenv->env_id, srcva, envid, e->env_ipc_dstva, perm);
     }
         
