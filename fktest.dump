@@ -1320,61 +1320,59 @@ Disassembly of section .text:
   401390:	00a09821 	move	s3,a1
   401394:	00c09021 	move	s2,a2
   401398:	00e08821 	move	s1,a3
-  40139c:	10000003 	b	4013ac <ipc_send+0x3c>
-  4013a0:	2410fffa 	li	s0,-6
-  4013a4:	0c10043d 	jal	4010f4 <syscall_yield>
-  4013a8:	00000000 	nop
-  4013ac:	02802021 	move	a0,s4
-  4013b0:	02602821 	move	a1,s3
-  4013b4:	02403021 	move	a2,s2
-  4013b8:	0c1004b4 	jal	4012d0 <syscall_ipc_can_send>
-  4013bc:	02203821 	move	a3,s1
-  4013c0:	1050fff8 	beq	v0,s0,4013a4 <ipc_send+0x34>
-  4013c4:	00000000 	nop
-  4013c8:	10400008 	beqz	v0,4013ec <ipc_send+0x7c>
-  4013cc:	8fbf0024 	lw	ra,36(sp)
-  4013d0:	3c040040 	lui	a0,0x40
-  4013d4:	248462b8 	addiu	a0,a0,25272
-  4013d8:	2405001c 	li	a1,28
-  4013dc:	3c060040 	lui	a2,0x40
-  4013e0:	24c662c0 	addiu	a2,a2,25280
-  4013e4:	0c100088 	jal	400220 <_user_panic>
-  4013e8:	00403821 	move	a3,v0
-  4013ec:	8fb40020 	lw	s4,32(sp)
-  4013f0:	8fb3001c 	lw	s3,28(sp)
-  4013f4:	8fb20018 	lw	s2,24(sp)
-  4013f8:	8fb10014 	lw	s1,20(sp)
-  4013fc:	8fb00010 	lw	s0,16(sp)
-  401400:	03e00008 	jr	ra
-  401404:	27bd0028 	addiu	sp,sp,40
+  40139c:	2410fffa 	li	s0,-6
+  4013a0:	02802021 	move	a0,s4
+  4013a4:	02602821 	move	a1,s3
+  4013a8:	02403021 	move	a2,s2
+  4013ac:	0c1004b4 	jal	4012d0 <syscall_ipc_can_send>
+  4013b0:	02203821 	move	a3,s1
+  4013b4:	1050fffb 	beq	v0,s0,4013a4 <ipc_send+0x34>
+  4013b8:	02802021 	move	a0,s4
+  4013bc:	10400008 	beqz	v0,4013e0 <ipc_send+0x70>
+  4013c0:	8fbf0024 	lw	ra,36(sp)
+  4013c4:	3c040040 	lui	a0,0x40
+  4013c8:	248462b8 	addiu	a0,a0,25272
+  4013cc:	2405001c 	li	a1,28
+  4013d0:	3c060040 	lui	a2,0x40
+  4013d4:	24c662c0 	addiu	a2,a2,25280
+  4013d8:	0c100088 	jal	400220 <_user_panic>
+  4013dc:	00403821 	move	a3,v0
+  4013e0:	8fb40020 	lw	s4,32(sp)
+  4013e4:	8fb3001c 	lw	s3,28(sp)
+  4013e8:	8fb20018 	lw	s2,24(sp)
+  4013ec:	8fb10014 	lw	s1,20(sp)
+  4013f0:	8fb00010 	lw	s0,16(sp)
+  4013f4:	03e00008 	jr	ra
+  4013f8:	27bd0028 	addiu	sp,sp,40
 
-00401408 <ipc_recv>:
-  401408:	27bdffe0 	addiu	sp,sp,-32
-  40140c:	afbf0018 	sw	ra,24(sp)
-  401410:	afb10014 	sw	s1,20(sp)
-  401414:	afb00010 	sw	s0,16(sp)
-  401418:	00808021 	move	s0,a0
-  40141c:	00c08821 	move	s1,a2
-  401420:	0c1004c3 	jal	40130c <syscall_ipc_recv>
-  401424:	00a02021 	move	a0,a1
-  401428:	12000004 	beqz	s0,40143c <ipc_recv+0x34>
-  40142c:	3c020040 	lui	v0,0x40
-  401430:	8c427000 	lw	v0,28672(v0)
-  401434:	8c4200c8 	lw	v0,200(v0)
-  401438:	ae020000 	sw	v0,0(s0)
-  40143c:	12200004 	beqz	s1,401450 <ipc_recv+0x48>
-  401440:	3c020040 	lui	v0,0x40
-  401444:	8c427000 	lw	v0,28672(v0)
-  401448:	8c4200d4 	lw	v0,212(v0)
-  40144c:	ae220000 	sw	v0,0(s1)
-  401450:	3c020040 	lui	v0,0x40
-  401454:	8c427000 	lw	v0,28672(v0)
-  401458:	8c4200c4 	lw	v0,196(v0)
-  40145c:	8fbf0018 	lw	ra,24(sp)
-  401460:	8fb10014 	lw	s1,20(sp)
-  401464:	8fb00010 	lw	s0,16(sp)
-  401468:	03e00008 	jr	ra
-  40146c:	27bd0020 	addiu	sp,sp,32
+004013fc <ipc_recv>:
+  4013fc:	27bdffe0 	addiu	sp,sp,-32
+  401400:	afbf0018 	sw	ra,24(sp)
+  401404:	afb10014 	sw	s1,20(sp)
+  401408:	afb00010 	sw	s0,16(sp)
+  40140c:	00808021 	move	s0,a0
+  401410:	00c08821 	move	s1,a2
+  401414:	0c1004c3 	jal	40130c <syscall_ipc_recv>
+  401418:	00a02021 	move	a0,a1
+  40141c:	12000004 	beqz	s0,401430 <ipc_recv+0x34>
+  401420:	3c020040 	lui	v0,0x40
+  401424:	8c427000 	lw	v0,28672(v0)
+  401428:	8c4200c8 	lw	v0,200(v0)
+  40142c:	ae020000 	sw	v0,0(s0)
+  401430:	12200004 	beqz	s1,401444 <ipc_recv+0x48>
+  401434:	3c020040 	lui	v0,0x40
+  401438:	8c427000 	lw	v0,28672(v0)
+  40143c:	8c4200d4 	lw	v0,212(v0)
+  401440:	ae220000 	sw	v0,0(s1)
+  401444:	3c020040 	lui	v0,0x40
+  401448:	8c427000 	lw	v0,28672(v0)
+  40144c:	8c4200c4 	lw	v0,196(v0)
+  401450:	8fbf0018 	lw	ra,24(sp)
+  401454:	8fb10014 	lw	s1,20(sp)
+  401458:	8fb00010 	lw	s0,16(sp)
+  40145c:	03e00008 	jr	ra
+  401460:	27bd0020 	addiu	sp,sp,32
+	...
 
 00401470 <strlen>:
   401470:	80820000 	lb	v0,0(a0)
@@ -2551,7 +2549,7 @@ Disassembly of section .text:
   402598:	24070600 	li	a3,1536
   40259c:	27a40010 	addiu	a0,sp,16
   4025a0:	02002821 	move	a1,s0
-  4025a4:	0c100502 	jal	401408 <ipc_recv>
+  4025a4:	0c1004ff 	jal	4013fc <ipc_recv>
   4025a8:	02203021 	move	a2,s1
   4025ac:	8fbf0020 	lw	ra,32(sp)
   4025b0:	8fb1001c 	lw	s1,28(sp)
@@ -3473,7 +3471,7 @@ Disassembly of section .pdr:
  414:	00000028 	0x28
  418:	0000001d 	0x1d
  41c:	0000001f 	0x1f
- 420:	00401408 	0x401408
+ 420:	004013fc 	0x4013fc
  424:	80030000 	lb	v1,0(zero)
  428:	fffffff8 	sdc3	$31,-8(ra)
 	...

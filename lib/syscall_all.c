@@ -361,7 +361,8 @@ void sys_ipc_recv(int sysno, u_int dstva)
     curenv->env_ipc_recving = 1;
     curenv->env_ipc_dstva = dstva;
     curenv->env_status = ENV_NOT_RUNNABLE;
-    sched_yield();
+    sys_yield();
+    //sched_yield();
 }
 
 /* Overview:
@@ -398,7 +399,7 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
     e->env_ipc_value = value;
     e->env_status = ENV_RUNNABLE;
     e->env_ipc_perm = perm;
-    
+
     if (srcva != 0) {
         sys_mem_map(sysno, curenv->env_id, srcva, envid, e->env_ipc_dstva, perm);
     }
