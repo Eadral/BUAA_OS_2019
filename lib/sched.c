@@ -12,9 +12,9 @@
  *  The variable which is for counting should be defined as 'static'.
  */
 
-static u_long count = 0;
-static int c_list = 0;
-static struct Env* e = NULL;
+u_long count = 0;
+int c_list = 0;
+struct Env* e = NULL;
 
 void sched_yield(void) {
     if (count == 0 || e->env_status == ENV_NOT_RUNNABLE) {

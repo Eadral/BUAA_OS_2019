@@ -153,7 +153,7 @@ int sys_mem_alloc(int sysno, u_int envid, u_int va, u_int perm)
     if (va >= UTOP) {
         panic("va > UTOP");
     }
-    if (perm & PTE_V == 0) {
+    if (perm & PTE_V == 0 || perm & PTE_COW) {
         panic("sys_mem_alloc");
         return -E_INVAL;
     } 
