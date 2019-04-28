@@ -39,6 +39,4 @@
             return x;                                               \
     } while(0)                                                        
 
-
-
 #endif

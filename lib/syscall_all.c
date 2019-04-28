@@ -404,7 +404,6 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
     e->env_status = ENV_RUNNABLE;
     LIST_INSERT_HEAD(&env_sched_list[0], e, env_sched_link);
     e->env_ipc_perm = perm;
-
     if (srcva != 0) {
         //sys_mem_map(sysno, curenv->env_id, srcva, envid, e->env_ipc_dstva, perm);
         p = page_lookup(curenv->env_pgdir, srcva, 0);
@@ -412,7 +411,7 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
             panic("p is 0");
         r = page_insert(e->env_pgdir, p, e->env_ipc_dstva, perm);
         ERR(r);
-
+        tlb_out(PTE_ADDR(e->env_ipc_dstva) | GET_ENV_ASID(e->env_id));
     }
         
 
