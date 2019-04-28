@@ -118,7 +118,7 @@ int sys_set_pgfault_handler(int sysno, u_int envid, u_int func, u_int xstacktop)
 	int ret;
 
     ret = envid2env(envid, &env, 1);
-    ERR(ret);
+    ERRR(ret);
     env->env_pgfault_handler = func;
     env->env_xstacktop = xstacktop;
 
@@ -158,11 +158,11 @@ int sys_mem_alloc(int sysno, u_int envid, u_int va, u_int perm)
         return -E_INVAL;
     } 
 	ret = page_alloc(&ppage);
-    ERR(ret);
+    ERRR(ret);
     ret = envid2env(envid, &env, 1);
-    ERR(ret);
+    ERRR(ret);
     ret = page_insert(env->env_pgdir, ppage, va, perm);
-    ERR(ret);
+    ERRR(ret);
     tlb_out(PTE_ADDR(va) | GET_ENV_ASID(env->env_id));
 
     return 0;
@@ -203,16 +203,16 @@ int sys_mem_map(int sysno, u_int srcid, u_int srcva, u_int dstid, u_int dstva,
         return -E_INVAL;
     }
     ret = envid2env(srcid, &srcenv, 1);
-    ERR(ret);
+    ERRR(ret);
     ret = envid2env(dstid, &dstenv, 1);
-    ERR(ret);
+    ERRR(ret);
     ppage = page_lookup(srcenv->env_pgdir, round_srcva, 0);
     if (ppage == 0) {
         panic("ppage is 0");
         
     }
     ret = page_insert(dstenv->env_pgdir, ppage, round_dstva, perm);
-    ERR(ret);
+    ERRR(ret);
     tlb_out(PTE_ADDR(round_dstva) | GET_ENV_ASID(dstenv->env_id));
 	return 0;
 }
@@ -232,7 +232,7 @@ int sys_mem_unmap(int sysno, u_int envid, u_int va)
 	int ret;
 	struct Env *env;
     ret = envid2env(envid, &env, 1);
-    ERR(ret);
+    ERRR(ret);
     page_remove(env->env_pgdir, va);
     tlb_out(PTE_ADDR(va) | GET_ENV_ASID(envid));
 	return 0;
@@ -257,7 +257,7 @@ int sys_env_alloc(void)
 	int r;
 	struct Env *e;
     r = env_alloc(&e, curenv->env_id);
-    ERR(r);
+    ERRR(r);
 	bcopy((void *)KERNEL_SP - sizeof(struct Trapframe),
 		  &(e->env_tf),
 		  sizeof(struct Trapframe));
@@ -292,7 +292,7 @@ int sys_set_env_status(int sysno, u_int envid, u_int status)
 	struct Env *env;
 	int ret;
     ret = envid2env(envid, &env, 1); 
-    ERR(ret); 
+    ERRR(ret); 
     u_int old_status = env->env_status;
     if (!(old_status == ENV_RUNNABLE || old_status == ENV_NOT_RUNNABLE || old_status == ENV_FREE)) 
     {
@@ -401,12 +401,7 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
     if (e->env_ipc_recving != 1) {
         return -E_IPC_NOT_RECV;
     }
-    e->env_ipc_recving = 0;
-    e->env_ipc_from = curenv->env_id;
-    e->env_ipc_value = value;
-    e->env_status = ENV_RUNNABLE;
-    LIST_INSERT_HEAD(&env_sched_list[0], e, env_sched_link);
-    e->env_ipc_perm = perm;
+
     if (srcva != 0) {
         //sys_mem_map(sysno, curenv->env_id, srcva, envid, e->env_ipc_dstva, perm);
         p = page_lookup(curenv->env_pgdir, srcva, 0);
@@ -416,7 +411,12 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
         ERR(r);
         tlb_out(PTE_ADDR(e->env_ipc_dstva) | GET_ENV_ASID(e->env_id));
     }
-        
+    e->env_ipc_recving = 0;
+    e->env_ipc_from = curenv->env_id;
+    e->env_ipc_value = value;
+    e->env_status = ENV_RUNNABLE;
+    LIST_INSERT_HEAD(&env_sched_list[0], e, env_sched_link);
+    e->env_ipc_perm = perm | PTE_V;
 
 	return 0;
 }

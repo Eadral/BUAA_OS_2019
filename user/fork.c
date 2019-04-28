@@ -180,7 +180,7 @@ fork(void)
     } else {
         // father
         for (i = 0; i < UTOP-2*BY2PG; i+=BY2PG) {
-            if(((*vpd)[VPN(i)/1024])!=0 && ((*vpt)[VPN(i)])!=0) {
+            if(((*vpd)[VPN(i) >> 10])!=0 && ((*vpt)[VPN(i)])!=0) {
                 duppage(newenvid, VPN(i));
             }
         }
