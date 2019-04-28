@@ -163,6 +163,7 @@ int sys_mem_alloc(int sysno, u_int envid, u_int va, u_int perm)
     ERR(ret);
     ret = page_insert(env->env_pgdir, ppage, va, perm);
     ERR(ret);
+    tlb_out(PTE_ADDR(va) | GET_ENV_ASID(env->env_id));
 
     return 0;
 
@@ -212,6 +213,7 @@ int sys_mem_map(int sysno, u_int srcid, u_int srcva, u_int dstid, u_int dstva,
     }
     ret = page_insert(dstenv->env_pgdir, ppage, round_dstva, perm);
     ERR(ret);
+    tlb_out(PTE_ADDR(round_dstva) | GET_ENV_ASID(dstenv->env_id));
 	return 0;
 }
 
@@ -232,6 +234,7 @@ int sys_mem_unmap(int sysno, u_int envid, u_int va)
     ret = envid2env(envid, &env, 1);
     ERR(ret);
     page_remove(env->env_pgdir, va);
+    tlb_out(PTE_ADDR(va) | GET_ENV_ASID(envid));
 	return 0;
 	//	panic("sys_mem_unmap not implemented");
 }

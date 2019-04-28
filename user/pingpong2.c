@@ -33,13 +33,10 @@ umain(void)
 
 	for (;;) {
         
-
-        syscall_panic("x");
-
         (*x)++;
         writef("%x add x. x now: %d\n", syscall_getenvid(), *x);
 
-		if (*x >= 10) {
+		if (*x >= 100) {
 			return;
 		}
 	}
