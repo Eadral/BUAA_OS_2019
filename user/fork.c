@@ -179,22 +179,21 @@ fork(void)
         return 0;
     } else {
         // father
-        //for (i = 0; i < (1 << 10); i++) {
-        //    if ((*vpd)[i] != 0) {
-        //        for (j = 0; j < (1 << 10); j++) {
-        //            if ((*vpt)[(i << 10) + j] != 0) {
-        //                duppage(newenvid, (i << 10) + j);
-        //            }
-        //       }
-        //    
-        //    }
-        //}
-
-        for (i = 0; i < UTOP-2*BY2PG; i+=BY2PG) {
-            if(((*vpd)[VPN(i) >> 10])!=0 && ((*vpt)[VPN(i)])!=0) {
-                duppage(newenvid, VPN(i));
+        u_int pn;
+        for (i = 0; i < 1024; i++) {
+            if ((*vpd)[i] & PTE_V) {
+                for (j = 0; j < 1024; j++) {
+                    pn = (i << 10) + j;
+                    if ((pn << PGSHIFT) >= UTOP-2*BY2PG)
+                        break;
+                    if ((*vpt)[pn] & PTE_V) {
+                        duppage(newenvid, pn);
+                    }
+                    
+                }
             }
         }
+
         int r;
         r = syscall_mem_alloc(newenvid, UXSTACKTOP - BY2PG, PTE_V | PTE_R);
         UERR(r);
