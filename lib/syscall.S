@@ -39,9 +39,9 @@ NESTED(handle_sys,TF_SIZE, sp)
     
      
     
-    subu    sp, sp, 36
+    subu    sp, sp, 40
     
-    li t8, 7
+    li t8, 8
     blt t8, 5, end_for
     nop
     li t1, 5 
@@ -69,7 +69,7 @@ NESTED(handle_sys,TF_SIZE, sp)
     nop
     
     // TODO: Resume current kernel stack
-    addu    sp, sp, 36 
+    addu    sp, sp, 40 
     sw      v0, TF_REG2(sp)             // Store return value of function sys_* (in $v0) into trapframe
 
     j       ret_from_exception          // Return from exeception
@@ -93,3 +93,4 @@ sys_call_table:                         // Syscall Table
     .word sys_ipc_can_send
     .word sys_ipc_recv
     .word sys_cgetc
+    .word sys_smp
