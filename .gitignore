@@ -12,3 +12,5 @@
 tags
 gxemul/vmlinux
 
+*.b
+*.x
