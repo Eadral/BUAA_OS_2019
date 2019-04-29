@@ -42,7 +42,7 @@ NESTED(handle_sys,TF_SIZE, sp)
     sll s5, s5, 2
     subu    sp, sp, s5
     
-    ble t6, 2, end_for
+    ble t6, 3, end_for
     nop
     addu t8, t6, 2
     nop
