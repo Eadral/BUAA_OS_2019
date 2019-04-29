@@ -166,7 +166,7 @@ fork(void)
 	u_int newenvid;
 	extern struct Env *envs;
 	extern struct Env *env;
-	u_int i;
+	u_int i, j;
 
 	//The parent installs pgfault using set_pgfault_handler
     set_pgfault_handler(pgfault);
@@ -179,6 +179,17 @@ fork(void)
         return 0;
     } else {
         // father
+        //for (i = 0; i < (1 << 10); i++) {
+        //    if ((*vpd)[i] != 0) {
+        //        for (j = 0; j < (1 << 10); j++) {
+        //            if ((*vpt)[(i << 10) + j] != 0) {
+        //                duppage(newenvid, (i << 10) + j);
+        //            }
+        //       }
+        //    
+        //    }
+        //}
+
         for (i = 0; i < UTOP-2*BY2PG; i+=BY2PG) {
             if(((*vpd)[VPN(i) >> 10])!=0 && ((*vpt)[VPN(i)])!=0) {
                 duppage(newenvid, VPN(i));
