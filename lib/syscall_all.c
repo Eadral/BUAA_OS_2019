@@ -421,7 +421,7 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
 	return 0;
 }
 
-int sys_smp(u_int a, u_int b, u_int c, u_int d, u_int e, u_int f, u_int g, u_int h) {
+int sys_smp(int sysno, u_int a, u_int b, u_int c, u_int d, u_int e, u_int f, u_int g, u_int h) {
 
-    return 0;
+    return a+b+c+d+e+f+g+h;
 }
