@@ -4,8 +4,8 @@
 void umain()
 {
     
-    writef("%d", syscall_super_multi_parameter(1, 2, 3, 4, 5, 6, 7, 8));
-    //USTOP();
+    writef("%d\n", syscall_super_multi_parameter(1, 2, 3, 4, 5, 6, 7, 8));
+    USTOP();
 
 	int a = 0;
 	int id = 0;

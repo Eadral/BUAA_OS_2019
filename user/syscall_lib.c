@@ -26,7 +26,7 @@ syscall_yield(void)
 int
 syscall_env_destroy(u_int envid)
 {
-	return msyscall(SYS_env_destroy, 1, envid, 0);
+	return msyscall(SYS_env_destroy, 1, envid);
 }
 int
 syscall_set_pgfault_handler(u_int envid, void (*func)(void), u_int xstacktop)
