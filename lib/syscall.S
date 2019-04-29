@@ -38,15 +38,15 @@ NESTED(handle_sys,TF_SIZE, sp)
     move    a3, t3
     
      
-    addu s5, t6, 2
+    addu s5, t6, 1
     sll s5, s5, 2
     subu    sp, sp, s5
     
-    //ble t6, 3, end_for
+    ble t6, 3, end_for
     nop
     addu t8, t6, 2
     nop
-    li t1, 5 
+    li t1, 2 
     for:
     bge t1, t8, end_for
     nop
@@ -66,7 +66,8 @@ NESTED(handle_sys,TF_SIZE, sp)
     
     //sw      t4, 16(sp)
     //sw      t5, 20(sp)
-    
+    sw a0, 0(sp)
+
     jalr    t7                          // Invoke sys_* function
     nop
     
