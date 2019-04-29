@@ -6,6 +6,7 @@
 void
 umain(void)
 {
+    writef("%d\n", syscall_super_multi_parameter(1, 2, 3, 4, 5, 6, 7, 8));
     // THIS IS pingpong2 
 	u_int who, i;
     volatile u_int *x;
@@ -36,7 +37,7 @@ umain(void)
         (*x)++;
         writef("%x add x. x now: %d\n", syscall_getenvid(), *x);
 
-		if (*x >= 100) {
+		if (*x >= 4) {
 			return;
 		}
 	}
