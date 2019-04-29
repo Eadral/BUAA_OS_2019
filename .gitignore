@@ -14,3 +14,6 @@ gxemul/vmlinux
 
 *.b
 *.x
+
+
+*.dump
