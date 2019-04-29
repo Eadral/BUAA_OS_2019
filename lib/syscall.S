@@ -21,30 +21,55 @@ NESTED(handle_sys,TF_SIZE, sp)
     sll     t0, a0, 2                   // t0 <- relative syscall number times 4
     la      t1, sys_call_table          // t1 <- syscall table base
     addu    t1, t1, t0                  // t1 <- table entry of specific syscall
-    lw      t2, 0(t1)                   // t2 <- function entry of specific syscall
+    lw      t7, 0(t1)                   // t2 <- function entry of specific syscall
+    
+    
 
     lw      t0, TF_REG29(sp)            // t0 <- user's stack pointer
     lw      t3, 16(t0)                  // t3 <- the 5th argument of msyscall
-    lw      t4, 20(t0)                  // t4 <- the 6th argument of msyscall
-
-    // TODO: Allocate a space of six arguments on current kernel stack and copy the six arguments to proper location
-    lw      a0, TF_REG4(sp)
-    lw      a1, TF_REG5(sp)
-    lw      a2, TF_REG6(sp)
-    lw      a3, TF_REG7(sp)
-    subu    sp, sp, 24
-    //sw      t5, 0(sp)
-    //sw      t6, 4(sp)
-    //sw      t7, 8(sp)
-    //sw      t8, 12(sp)
-    sw      t3, 16(sp)
-    sw      t4, 20(sp)
     
-    jalr    t2                          // Invoke sys_* function
+    //lw      t4, 20(t0)                  // t4 <- the 6th argument of msyscall
+    //lw      t5, 24(t0)
+
+    lw      a0, TF_REG4(sp)
+    //lw      a1, TF_REG5(sp)
+    lw      a1, TF_REG6(sp)
+    lw      a2, TF_REG7(sp)
+    move    a3, t3
+    
+     
+    
+    subu    sp, sp, 36
+    
+    li t8, 7
+    blt t8, 5, end_for
+    nop
+    li t1, 5 
+    for:
+    bge t1, t8, end_for
+    nop
+    
+    sll t2, t1, 2
+    addu t3, t2, t0
+    lw t4, 0(t3)
+
+    subu t2, t2, 4
+    addu t3, t2, sp
+    sw t4, 0(t3)
+    
+    addu t1, t1, 1
+    j for
+    nop
+    end_for:
+    
+    //sw      t4, 16(sp)
+    //sw      t5, 20(sp)
+    
+    jalr    t7                          // Invoke sys_* function
     nop
     
     // TODO: Resume current kernel stack
-    addu    sp, sp, 24 
+    addu    sp, sp, 36 
     sw      v0, TF_REG2(sp)             // Store return value of function sys_* (in $v0) into trapframe
 
     j       ret_from_exception          // Return from exeception
