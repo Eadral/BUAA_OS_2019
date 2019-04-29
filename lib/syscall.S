@@ -32,17 +32,19 @@ NESTED(handle_sys,TF_SIZE, sp)
     //lw      t5, 24(t0)
 
     lw      a0, TF_REG4(sp)
-    //lw      a1, TF_REG5(sp)
+    lw      t6, TF_REG5(sp)
     lw      a1, TF_REG6(sp)
     lw      a2, TF_REG7(sp)
     move    a3, t3
     
      
+    addu s5, t6, 2
+    sll s5, s5, 2
+    subu    sp, sp, s5
     
-    subu    sp, sp, 40
-    
-    li t8, 12
-    blt t8, 5, end_for
+    ble t6, 3, end_for
+    nop
+    addu t8, t6, 2
     nop
     li t1, 5 
     for:
@@ -69,7 +71,7 @@ NESTED(handle_sys,TF_SIZE, sp)
     nop
     
     // TODO: Resume current kernel stack
-    addu    sp, sp, 40 
+    addu    sp, sp, s5
     sw      v0, TF_REG2(sp)             // Store return value of function sys_* (in $v0) into trapframe
 
     j       ret_from_exception          // Return from exeception
