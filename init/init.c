@@ -24,7 +24,6 @@ void mips_init()
     //ENV_CREATE_PRIORITY(user_B, 2);
 	ENV_CREATE(user_fktest);
 	//ENV_CREATE(user_pingpong);
-	//ENV_CREATE(user_pingpong2);
 
     trap_init();
 	kclock_init();
