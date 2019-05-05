@@ -39,9 +39,6 @@ void sched_yield(void) {
     count--;
     //printf("\n@%d@  ", env->env_id);
     //struct Env* t = NULL;
-    //LIST_FOREACH(t, &env_sched_list[c_list], env_sched_link) {
-    //    printf("$%d %d,", t->env_id, t->env_status);
-    //}
     //printf("c_list: %d \n", c_list);
     //printf("pc: %x ", e->env_tf.pc);
     env_run(e);
