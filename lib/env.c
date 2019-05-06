@@ -224,6 +224,10 @@ env_alloc(struct Env **new, u_int parent_id)
 
     /*Step 5: Remove the new Env from Env free list*/
     LIST_REMOVE(e, env_link);
+
+
+    e->env_runs = 0;
+    e->env_nop = 0;
     
     *new = e;
     return 0;
@@ -431,6 +435,10 @@ env_free(struct Env *e)
 void
 env_destroy(struct Env *e)
 {
+    printf("%08x envid\n", e->env_id); 
+    printf("%08x pgfault_out\n", e->env_runs); // 用户空间的页面被动分配
+    printf("%08x pgfault_cow\n", e->env_nop); // 写时复制
+
     /* Hint: free e. */
 	env_free(e);
 

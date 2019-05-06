@@ -109,6 +109,7 @@ pgfault(u_int va)
     //unmap the temporary place
     r = syscall_mem_unmap(0, tmp);
     UERR(r);
+    
 
     //writef("%x\n", PTE_ADDR((*vpt)[VPN(va)]));
 }
