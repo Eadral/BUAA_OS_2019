@@ -163,7 +163,6 @@ int sys_mem_alloc(int sysno, u_int envid, u_int va, u_int perm)
     ERRR(ret);
     ret = page_insert(env->env_pgdir, ppage, va, perm);
     ERRR(ret);
-    tlb_out(PTE_ADDR(va) | GET_ENV_ASID(env->env_id));
 
     return 0;
 
@@ -213,7 +212,6 @@ int sys_mem_map(int sysno, u_int srcid, u_int srcva, u_int dstid, u_int dstva,
     }
     ret = page_insert(dstenv->env_pgdir, ppage, round_dstva, perm);
     ERRR(ret);
-    tlb_out(PTE_ADDR(round_dstva) | GET_ENV_ASID(dstenv->env_id));
 	return 0;
 }
 
@@ -234,7 +232,6 @@ int sys_mem_unmap(int sysno, u_int envid, u_int va)
     ret = envid2env(envid, &env, 1);
     ERRR(ret);
     page_remove(env->env_pgdir, va);
-    tlb_out(PTE_ADDR(va) | GET_ENV_ASID(envid));
 	return 0;
 	//	panic("sys_mem_unmap not implemented");
 }
@@ -409,7 +406,6 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
             panic("p is 0");
         r = page_insert(e->env_pgdir, p, e->env_ipc_dstva, perm);
         ERR(r);
-        tlb_out(PTE_ADDR(e->env_ipc_dstva) | GET_ENV_ASID(e->env_id));
     }
     e->env_ipc_recving = 0;
     e->env_ipc_from = curenv->env_id;
