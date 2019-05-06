@@ -207,6 +207,74 @@ fork(void)
 	return newenvid;
 }
 
+static void
+tduppage(u_int envid, u_int pn)
+{
+    u_int pte = (*vpt)[pn];
+	u_int addr = pn * BY2PG;
+	u_int perm = pte & 0xFFF;
+    
+    if ((pn << PGSHIFT) < 0x50000000) {
+        syscall_mem_map(0, addr, envid, addr, perm); 
+    } else 
+    if ((perm & PTE_V) && (perm & PTE_LIBRARY) && (perm & PTE_R)) {
+        syscall_mem_map(0, addr, envid, addr, perm); 
+    } else if ((perm & PTE_V) && ((perm & PTE_COW) || (perm & PTE_R))) {
+        syscall_mem_map(0, addr, envid, addr, perm | PTE_COW); 
+        syscall_mem_map(0, addr, 0, addr, perm | PTE_COW);
+    } else {
+        syscall_mem_map(0, addr, envid, addr, perm); 
+    }
+    
+	//	user_panic("duppage not implemented");
+}
+int
+tfork(void)
+{
+	// Your code here.
+	u_int newenvid;
+	extern struct Env *envs;
+	extern struct Env *env;
+	u_int i, j;
+
+	//The parent installs pgfault using set_pgfault_handler
+    set_pgfault_handler(pgfault);
+	//alloc a new alloc
+    newenvid = syscall_env_alloc();
+    if (newenvid == 0) {
+        // child
+        env = &envs[ENVX(syscall_getenvid())];
+        //USTOP();
+        return 0;
+    } else {
+        // father
+        u_int pn;
+        for (i = 0; i < 1024; i++) {
+            if ((*vpd)[i] & PTE_V) {
+                for (j = 0; j < 1024; j++) {
+                    pn = (i << 10) + j;
+                    if ((pn << PGSHIFT) >= UTOP-2*BY2PG)
+                        break;
+                    if ((*vpt)[pn] & PTE_V) {
+                        tduppage(newenvid, pn);
+                    }
+                    
+                }
+            }
+        }
+
+        int r;
+        r = syscall_mem_alloc(newenvid, UXSTACKTOP - BY2PG, PTE_V | PTE_R);
+        UERR(r);
+        r = syscall_set_pgfault_handler(newenvid, __asm_pgfault_handler, UXSTACKTOP);
+        UERR(r);
+        r = syscall_set_env_status(newenvid, ENV_RUNNABLE); 
+        UERR(r);
+    }
+
+
+	return newenvid;
+}
 // Challenge!
 int
 sfork(void)

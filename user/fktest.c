@@ -7,8 +7,8 @@ void umain()
 	int a = 0;
 	int id = 0;
     //writef("start");
-	if ((id = fork()) == 0) {
-		if ((id = fork()) == 0) {
+	if ((id = tfork()) == 0) {
+		if ((id = tfork()) == 0) {
 			a += 3;
 
 			for (;;) {
