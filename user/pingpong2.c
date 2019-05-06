@@ -62,7 +62,7 @@ void umain()
 
 		//user_panic("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
 		if (i == 10) {
-			return;
+			break;
 		}
 
 		i++;
@@ -70,7 +70,7 @@ void umain()
 		ipc_send(who, i, 0, 0);
 
 		if (i == 10) {
-			return;
+			break;
 		}
 	}
         writef("0x%d,with a0:0x%d,b0:0x%d,a1:0x%d,b1:0x%d,a2:0x%d,b2:0x%d\n",syscall_getenvid(),a[0],b[0],a[1],b[1],a[2],b[2]);
