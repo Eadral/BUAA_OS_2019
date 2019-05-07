@@ -17,3 +17,6 @@ gxemul/vmlinux
 
 
 *.dump
+
+
+*.img
