@@ -65,6 +65,14 @@ void syscall_panic(char *msg);
 int syscall_ipc_can_send(u_int envid, u_int value, u_int srcva, u_int perm);
 void syscall_ipc_recv(u_int dstva);
 int syscall_cgetc();
+int syscall_write_dev(u_int va, u_int dev, u_int len);
+int syscall_read_dev(u_int va, u_int dev, u_int len);
+inline static int write_dev(u_int v, u_int dev, u_int offset, u_int len) {
+    return syscall_write_dev(&v, dev+offset, len);
+}
+inline static int read_dev(u_int *v, u_int dev, u_int offset, u_int len) {
+    return syscall_read_dev(v, dev+offset, len);
+}
 
 // string.c
 int strlen(const char *s);

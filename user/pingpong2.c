@@ -1,77 +1,45 @@
+// Ping-pong a counter between two processes.
+// Only need to start one of these -- splits into two with fork.
+
 #include "lib.h"
 
-int a[100000];
-void umain()
+void
+umain(void)
 {
-        int b[10000];
-        b[0]=8;
-        a[0]=8;
-        if(fork()==0){
-                b[0]=7;
-                a[0]=7;
-                if(fork()==0){
-                        b[0]=6;
-                        a[0]=6;
-                        if(fork()==0){
-                                b[0]=5;
-                                a[0]=5;
-                                if(fork()==0){
-                                        b[0]=4;
-                                        a[0]=4;
-                                        if(fork()==0){
-                                                b[0]=3;
-                                                a[0]=3;
-                                                if(fork()==0){
-                                                        b[0]=2;
-                                                        a[0]=2;
-                                                        if(fork()==0){
-                                                                b[0]=1;
-                                                                a[0]=1;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-
-                }
-        }
-        int id=fork();
-        if(id==0){
-                b[1]=10;
-                a[1]=20;
-        }
-        id=fork();
-        if(id==0){
-                b[2]=30;
-                a[2]=40;
-        }
+    // THIS IS pingpong2 
 	u_int who, i;
+    volatile u_int *x;
+    u_int addr;
 
 	if ((who = fork()) != 0) {
+        // father
 		// get the ball rolling
-		writef("\n@@@@@send 0 from %x to %x\n", syscall_getenvid(), who);
-		ipc_send(who, 0, 0, 0);
+        addr = 0x50000000;
+        //syscall_mem_alloc(0, addr, PTE_V | PTE_R);
+        x = addr;
+        *x = 0;
+		ipc_send(who, i, addr, PTE_R);
 		//user_panic("&&&&&&&&&&&&&&&&&&&&&&&&m");
-	}
+	} else {
+        // child
+        addr = 0x50000000;
+        //syscall_mem_alloc(0, addr, PTE_V | PTE_R);
+        x = addr;
+        *x = 0;
+        ipc_recv(&who, addr, 0);
+
+    }
+    
 
 	for (;;) {
-		writef("%x am waiting.....\n", syscall_getenvid());
-		i = ipc_recv(&who, 0, 0);
+        
+        (*x)++;
+        writef("%x add x. x now: %d\n", syscall_getenvid(), *x);
 
-		writef("%x got %d from %x\n", syscall_getenvid(), i, who);
-
-		//user_panic("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-		if (i == 10) {
-			break;
-		}
-
-		i++;
-		writef("\n@@@@@send %d from %x to %x\n",i, syscall_getenvid(), who);
-		ipc_send(who, i, 0, 0);
-
-		if (i == 10) {
-			break;
+		if (*x >= 100) {
+			return;
 		}
 	}
-        writef("0x%d,with a0:0x%d,b0:0x%d,a1:0x%d,b1:0x%d,a2:0x%d,b2:0x%d\n",syscall_getenvid(),a[0],b[0],a[1],b[1],a[2],b[2]);
+
 }
+

@@ -407,7 +407,6 @@ env_free(struct Env *e)
 		for (pteno = 0; pteno <= PTX(~0); pteno++)
 			if (pt[pteno] & PTE_V) {
 				page_remove(e->env_pgdir, (pdeno << PDSHIFT) | (pteno << PGSHIFT));
-                tlb_out(PTE_ADDR(pt[pteno]) | GET_ENV_ASID(e->env_id));
 			}
         /* Hint: free the page table itself. */
 		e->env_pgdir[pdeno] = 0;

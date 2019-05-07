@@ -200,11 +200,29 @@ int make_link_block(struct File *dirf, int nblk) {
 //      We ASSUM that this function will never fail
 
 struct File *create_file(struct File *dirf) {
-    struct File *dirblk;
-    int i, bno, found;
+    struct File *dirblk = NULL;
+    int i, bno = 0, found = 0;
     int nblk = dirf->f_size / BY2BLK;
     
     // Your code here
+    
+    if (nblk > 0) {
+
+        if (nblk < NDIRECT) {
+            bno = dirf->f_direct[nblk-1];
+        } else {
+                bno = ((u_int *)(disk[dirf->f_indirect].data))[nblk-1];
+        }
+
+        dirblk = (File *)(disk[bno].data);
+        for (i = 0; i < FILE2BLK; i++) {
+            if (dirblk[i].f_name[0] == '\0')
+                return &dirblk[i];
+        }
+    } 
+    bno = make_link_block(dirf, nblk);
+    
+    return (File *)(disk[bno].data);
 }
 
 // Write file to disk under specified dir.
