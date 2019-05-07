@@ -37,12 +37,14 @@ open(const char *path, int mode)
 	// Step 1: Alloc a new Fd, return error code when fail to alloc.
 	// Hint: Please use fd_alloc.
     r = fd_alloc(&fd);
-    UERR(r);
+    if (r < 0)
+        return r;
     ffd = fd;
 
 	// Step 2: Get the file descriptor of the file to open.
     r = fsipc_open(path, mode, fd);
-    UERR(r);
+    if (r < 0)
+        return r;
 
 	// Step 3: Set the start address storing the file's content. Set size and fileid correctly.
 	// Hint: Use fd2data to get the start address.

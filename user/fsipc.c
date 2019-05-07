@@ -130,7 +130,7 @@ fsipc_remove(const char *path)
 	// Step 1: decide if the path is valid.
     if (strlen(path) > MAXPATHLEN) {
         user_panic("len(path) > MAXPATHLEN");
-        return -1;
+        return -E_BAD_PATH;
     }
 
 	// Step 2: Send request to fs server with IPC.

@@ -547,6 +547,8 @@ dir_lookup(struct File *dir, char *name, struct File **file)
         for (j = 0; j < FILE2BLK; j++) {
             if (strcmp(name, f[j].f_name) == 0) {
                 *file = &f[j];
+                // TODO: why this
+                f[j].f_dir = dir;
                 return 0;
             }
                 

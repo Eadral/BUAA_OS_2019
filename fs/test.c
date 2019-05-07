@@ -57,9 +57,6 @@ fs_test(void)
 	if ((r = file_get_block(f, 0, &blk)) < 0) {
 		user_panic("file_get_block: %e", r);
 	}
-    
-    ULOG("blk: %s", blk);
-    ULOG("msg: %s", msg);
 
 	if (strecmp(blk, msg) != 0) {
 		user_panic("file_get_block returned wrong data");
