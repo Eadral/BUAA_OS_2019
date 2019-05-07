@@ -66,8 +66,6 @@ END(handle_int)
 	.extern delay
 
 timer_irq:
-    
-    //sw zero, 0xb5000100   
 
 1:	j	sched_yield
 	nop
