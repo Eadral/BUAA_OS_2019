@@ -1,2 +1,2 @@
 make
-gxemul -E testmips -C R3000 -M 64 -V -v -t gxemul/vmlinux 
+gxemul -E testmips -C R3000 -M 64 -d gxemul/fs.img -V gxemul/vmlinux

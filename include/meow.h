@@ -4,6 +4,20 @@
 
 #define PRINTX(X) printf("@%d: %x\n", __LINE__, X);
 #define PRINTD(X) printf("@%d: %d\n", __LINE__, X);
+
+
+#define UDEBUG(x)               \
+    do {                        \
+        writef("!!! %s. @%s:%d\n", (x), __FILE__, __LINE__);  \
+    } while(0)
+
+#define ULOG(fmt, x)            \
+    do {                        \
+        writef("!!! ");         \
+        writef(fmt, x);         \
+        writef(". @%s:%d\n", __FILE__, __LINE__);  \
+    } while(0)
+
 #define STOP()                  \
     do {                        \
         printf("MEOW!");        \

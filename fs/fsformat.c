@@ -208,10 +208,10 @@ struct File *create_file(struct File *dirf) {
     
     if (nblk > 0) {
 
-        if (nblk < NDIRECT) {
+        if (nblk <= NDIRECT) {
             bno = dirf->f_direct[nblk-1];
         } else {
-                bno = ((u_int *)(disk[dirf->f_indirect].data))[nblk-1];
+            bno = ((u_int *)(disk[dirf->f_indirect].data))[nblk-1];
         }
 
         dirblk = (File *)(disk[bno].data);

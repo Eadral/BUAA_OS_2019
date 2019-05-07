@@ -15,6 +15,9 @@ int block_is_free(u_int);
 u_int
 diskaddr(u_int blockno)
 {
+    if (super && blockno > super->s_nblocks)
+        user_panic("blockno > s_nblocks");
+    return DISKMAP + blockno * BY2BLK;
 }
 
 // Overview:
@@ -65,8 +68,12 @@ int
 map_block(u_int blockno)
 {
 	// Step 1: Decide whether this block is already mapped to a page of physical memory.
-
+    if (block_is_mapped(blockno))
+        return 0;
     // Step 2: Alloc a page of memory for this block via syscall.
+    int r = syscall_mem_alloc(0, diskaddr(blockno), PTE_R);
+    UERR(r);
+    return r;
 }
 
 // Overview:
@@ -77,12 +84,15 @@ unmap_block(u_int blockno)
 	int r;
 
 	// Step 1: check if this block is mapped.
-
+    if (!block_is_mapped(blockno))
+        return 0;
 	// Step 2: if this block is used(not free) and dirty, it needs to be synced to disk,
 	// can't be unmap directly.
-
+    if (!block_is_free(blockno) && block_is_dirty(blockno)) 
+        write_block(blockno);
 	// Step 3: use `syscall_mem_unmap` to unmap corresponding virtual memory.
-
+    r = syscall_mem_unmap(0, diskaddr(blockno));
+    UERR(r);
 	// Step 4: validate result of this unmap operation.
 	user_assert(!block_is_mapped(blockno));
 }
@@ -317,7 +327,6 @@ void
 check_write_block(void)
 {
 	super = 0;
-
 	// backup the super block.
 	// copy the data in super block to the first block on the disk.
 	read_block(0, 0, 0);
@@ -525,15 +534,25 @@ dir_lookup(struct File *dir, char *name, struct File **file)
 	struct File *f;
 
 	// Step 1: Calculate nblock: how many blocks this dir have.
+    nblock = dir->f_size / BY2BLK;
 
 	for (i = 0; i < nblock; i++) {
 		// Step 2: Read the i'th block of the dir.
 		// Hint: Use file_get_block.
-
-
+        r = file_get_block(dir, i, &blk); 
+        UERR(r);
 		// Step 3: Find target file by file name in all files on this block.
 		// If we find the target file, set the result to *file and set f_dir field.
-		
+	    f = (struct File*)blk;
+        for (j = 0; j < FILE2BLK; j++) {
+            if (strcmp(name, f[j].f_name) == 0) {
+                *file = &f[j];
+                return 0;
+            }
+                
+        } 
+
+
 	}
 
 	return -E_NOT_FOUND;

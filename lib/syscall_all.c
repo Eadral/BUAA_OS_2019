@@ -327,7 +327,10 @@ int sys_set_env_status(int sysno, u_int envid, u_int status)
  */
 int sys_set_trapframe(int sysno, u_int envid, struct Trapframe *tf)
 {
-    panic("sys_set_trapframe");
+    u_int *addr;
+    addr = 0xb5000100;
+    *addr = 0;
+    printf("IN SYS_SET_TRAPFRAME");
 	return 0;
 }
 
@@ -422,6 +425,16 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
 }
 
 
+inline int dev_addr_check(u_int dev) {
+    if (!(
+        (0x10000000 <= dev <= 0x10000000 + 0x20) ||
+        (0x13000000 <= dev <= 0x13000000 + 0x4200) ||
+        (0x15000000 <= dev <= 0x15000000 + 0x200)
+        ))
+            return -1;
+    return 0;
+}
+#define        PHYSADDR_OFFSET         ((signed int)0xA0000000)
 
 /* Overview:
  * 	This function is used to write data to device, which is
@@ -451,10 +464,12 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
 int sys_write_dev(int sysno, u_int va, u_int dev, u_int len)
 {
         // Your code here
+    if (dev_addr_check(dev) < 0)
+        return -E_INVAL;
     u_int kva = PHYSADDR_OFFSET + dev;
     int i;
     
-    bcopy(va, kva, len);      
+    bcopy(va, kva, len); 
     
     return 0;
 }
@@ -478,6 +493,8 @@ int sys_write_dev(int sysno, u_int va, u_int dev, u_int len)
 int sys_read_dev(int sysno, u_int va, u_int dev, u_int len)
 {
         // Your code here
+    if (dev_addr_check(dev) < 0)
+        return -E_INVAL;
     u_int kva = PHYSADDR_OFFSET + dev;
     
     bcopy(kva, va, len);

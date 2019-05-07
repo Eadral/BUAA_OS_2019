@@ -6,6 +6,12 @@
 #include "lib.h"
 #include <mmu.h>
 
+inline static int write_dev(u_int v, u_int dev, u_int offset, u_int len) {
+    return syscall_write_dev(&v, dev+offset, len);
+}
+inline static int read_dev(u_int *v, u_int dev, u_int offset, u_int len) {
+    return syscall_read_dev(v, dev+offset, len);
+}
 // Overview:
 // 	read data from IDE disk. First issue a read request through
 // 	disk register and then copy data from disk buffer
@@ -46,7 +52,7 @@ ide_read(u_int diskno, u_int secno, void *dst, u_int nsecs)
         r = read_sector(diskno, offset_begin + offset);
         if (r < 0) 
             user_panic("ide_read failed");
-        syscall_read_dev(dst + offset, 0xB3004000, 0x200);
+        syscall_read_dev(dst + offset, 0x13004000, 0x200);
         offset += 0x200;
 	}
 }
@@ -70,7 +76,7 @@ int write_sector(u_int diskno, u_int offset) {
     u_int dev = 0x13000000;
     write_dev(diskno, dev, 0x0010, 4); // select the IDE id
     write_dev(offset, dev, 0x0000, 4); // offset
-    write_dev(1, dev, 0x0020, 1);  // write read
+    write_dev(1, dev, 0x0020, 4);  // write read
     int r;
     read_dev(&r, dev, 0x0030, 4);  // get status
     return r ? 0 : -1;
@@ -88,10 +94,10 @@ ide_write(u_int diskno, u_int secno, void *src, u_int nsecs)
     while (offset_begin + offset < offset_end) {
 	    // copy data from source array to disk buffer.
             // if error occur, then panic.
+        syscall_write_dev(src + offset, 0x13004000, 0x200);
         r = write_sector(diskno, offset_begin + offset);
         if (r < 0) 
             user_panic("ide_write failed");
-        syscall_write_dev(src + offset, 0xB3004000, 0x200);
         offset += 0x200;
 	}
 }
