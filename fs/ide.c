@@ -6,11 +6,11 @@
 #include "lib.h"
 #include <mmu.h>
 
-inline static int write_dev(u_int v, u_int dev, u_int offset, u_int len) {
-    return syscall_write_dev(&v, dev+offset, len);
+inline int write_dev(u_int v, u_int dev, u_int offset) {
+    return syscall_write_dev(&v, dev+offset, 4);
 }
-inline static int read_dev(u_int *v, u_int dev, u_int offset, u_int len) {
-    return syscall_read_dev(v, dev+offset, len);
+inline int read_dev(u_int *v, u_int dev, u_int offset) {
+    return syscall_read_dev(v, dev+offset, 4);
 }
 // Overview:
 // 	read data from IDE disk. First issue a read request through
@@ -30,11 +30,11 @@ inline static int read_dev(u_int *v, u_int dev, u_int offset, u_int len) {
 
 int read_sector(u_int diskno, u_int offset) {
     u_int dev = 0x13000000;
-    write_dev(diskno, dev, 0x0010, 4); // select the IDE id
-    write_dev(offset, dev, 0x0000, 4); // offset
-    write_dev(0, dev, 0x0020, 1);  // start read
+    write_dev(diskno, dev, 0x0010); // select the IDE id
+    write_dev(offset, dev, 0x0000); // offset
+    write_dev(0, dev, 0x0020);  // start read
     int r;
-    read_dev(&r, dev, 0x0030, 4);  // get status
+    read_dev(&r, dev, 0x0030);  // get status
     return r ? 0 : -1;
 }
     
@@ -74,11 +74,11 @@ ide_read(u_int diskno, u_int secno, void *dst, u_int nsecs)
 
 int write_sector(u_int diskno, u_int offset) {
     u_int dev = 0x13000000;
-    write_dev(diskno, dev, 0x0010, 4); // select the IDE id
-    write_dev(offset, dev, 0x0000, 4); // offset
-    write_dev(1, dev, 0x0020, 4);  // write read
+    write_dev(diskno, dev, 0x0010); // select the IDE id
+    write_dev(offset, dev, 0x0000); // offset
+    write_dev(1, dev, 0x0020);  // write read
     int r;
-    read_dev(&r, dev, 0x0030, 4);  // get status
+    read_dev(&r, dev, 0x0030);  // get status
     return r ? 0 : -1;
 }
     
