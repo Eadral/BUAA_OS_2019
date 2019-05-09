@@ -208,6 +208,8 @@ free_block(u_int blockno)
     bitmap[blockno / 32] = bitmap[blockno / 32] & (~(1 << (blockno % 32) )) ; 
 
 	// Step 2: Update the flag bit in bitmap.
+    bitmap[blockno / 32] = bitmap[blockno / 32] & (~(1 << (blockno % 32) )) ; 
+	write_block(2 + blockno / BIT2BLK); // write to disk.
 }
 
 // Overview:

@@ -425,11 +425,11 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
 }
 
 
-inline int dev_addr_check(u_int dev) {
+inline int dev_addr_check(u_int dev, u_int len) {
     if (!(
-        (0x10000000 <= dev && dev < 0x10000000 + 0x20) ||
-        (0x13000000 <= dev && dev < 0x13000000 + 0x4200) ||
-        (0x15000000 <= dev && dev < 0x15000000 + 0x200)
+        ((0x10000000 <= dev && dev < 0x10000000 + 0x20)     && len <= 0x20) ||
+        ((0x13000000 <= dev && dev < 0x13000000 + 0x4200)   && len <= 0x4200) ||
+        ((0x15000000 <= dev && dev < 0x15000000 + 0x200)    && len <= 0x200)
         ))
             return -1;
     return 0;
@@ -464,7 +464,7 @@ inline int dev_addr_check(u_int dev) {
 int sys_write_dev(int sysno, u_int va, u_int dev, u_int len)
 {
         // Your code here
-    if (dev_addr_check(dev) < 0)
+    if (dev_addr_check(dev, len) < 0)
         return -E_INVAL;
     u_int kva = PHYSADDR_OFFSET + dev;
     int i;
@@ -493,7 +493,7 @@ int sys_write_dev(int sysno, u_int va, u_int dev, u_int len)
 int sys_read_dev(int sysno, u_int va, u_int dev, u_int len)
 {
         // Your code here
-    if (dev_addr_check(dev) < 0)
+    if (dev_addr_check(dev, len) < 0)
         return -E_INVAL;
     u_int kva = PHYSADDR_OFFSET + dev;
     
