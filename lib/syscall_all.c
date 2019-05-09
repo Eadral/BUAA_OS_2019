@@ -464,8 +464,8 @@ inline int dev_addr_check(u_int dev) {
 int sys_write_dev(int sysno, u_int va, u_int dev, u_int len)
 {
         // Your code here
-    if (dev_addr_check(dev) < 0)
-        return -E_INVAL;
+    //if (dev_addr_check(dev) < 0)
+    //    return -E_INVAL;
     u_int kva = PHYSADDR_OFFSET + dev;
     int i;
     
@@ -493,8 +493,8 @@ int sys_write_dev(int sysno, u_int va, u_int dev, u_int len)
 int sys_read_dev(int sysno, u_int va, u_int dev, u_int len)
 {
         // Your code here
-    if (dev_addr_check(dev) < 0)
-        return -E_INVAL;
+    //if (dev_addr_check(dev) < 0)
+    //    return -E_INVAL;
     u_int kva = PHYSADDR_OFFSET + dev;
     
     bcopy(kva, va, len);
