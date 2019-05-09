@@ -427,9 +427,9 @@ int sys_ipc_can_send(int sysno, u_int envid, u_int value, u_int srcva,
 
 inline int dev_addr_check(u_int dev) {
     if (!(
-        (0x10000000 <= dev <= 0x10000000 + 0x20) ||
-        (0x13000000 <= dev <= 0x13000000 + 0x4200) ||
-        (0x15000000 <= dev <= 0x15000000 + 0x200)
+        (0x10000000 <= dev && dev < 0x10000000 + 0x20) ||
+        (0x13000000 <= dev && dev < 0x13000000 + 0x4200) ||
+        (0x15000000 <= dev && dev < 0x15000000 + 0x200)
         ))
             return -1;
     return 0;

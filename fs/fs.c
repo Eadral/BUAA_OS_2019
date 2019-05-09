@@ -201,7 +201,7 @@ void
 free_block(u_int blockno)
 {
 	// Step 1: Check if the parameter `blockno` is valid (`blockno` can't be zero).
-    if (blockno == 0) {
+    if (blockno == 0 || super == 0 || blockno >= super->s_nblocks) {
         user_panic("free_block: blockno is zero!");
     }
 
@@ -225,7 +225,7 @@ alloc_block_num(void)
 	for (blockno = 3; blockno < super->s_nblocks; blockno++) {
 		if (bitmap[blockno / 32] & (1 << (blockno % 32))) {	//the block is free
 			bitmap[blockno / 32] &= ~(1 << (blockno % 32));
-			write_block(blockno / BIT2BLK); // write to disk.
+			write_block(2 + blockno / BIT2BLK); // write to disk.
 			return blockno;
 		}
 	}
@@ -351,6 +351,7 @@ check_write_block(void)
 	super = (struct Super *)diskaddr(1);
 }
 
+    //path[MAXPATHLEN - 1] = 0;
 // Overview:
 //	Initialize the file system.
 // Hint:
@@ -547,7 +548,6 @@ dir_lookup(struct File *dir, char *name, struct File **file)
         for (j = 0; j < FILE2BLK; j++) {
             if (strcmp(name, f[j].f_name) == 0) {
                 *file = &f[j];
-                // TODO: why this
                 f[j].f_dir = dir;
                 return 0;
             }
