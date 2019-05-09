@@ -27,6 +27,7 @@ inline int read_dev(u_int *v, u_int dev, u_int offset) {
 // 	If error occurred during read the IDE disk, panic. 
 // 	
 // Hint: use syscalls to access device registers and buffers
+                // TODO: why this
 
 int read_sector(u_int diskno, u_int offset) {
     u_int dev = 0x13000000;
@@ -50,8 +51,6 @@ ide_read(u_int diskno, u_int secno, void *dst, u_int nsecs)
             // Your code here
             // error occurred, then panic.
         r = read_sector(diskno, offset_begin + offset);
-        if (r < 0) 
-            user_panic("ide_read failed");
         syscall_read_dev(dst + offset, 0x13004000, 0x200);
         offset += 0x200;
 	}
@@ -96,8 +95,6 @@ ide_write(u_int diskno, u_int secno, void *src, u_int nsecs)
             // if error occur, then panic.
         syscall_write_dev(src + offset, 0x13004000, 0x200);
         r = write_sector(diskno, offset_begin + offset);
-        if (r < 0) 
-            user_panic("ide_write failed");
         offset += 0x200;
 	}
 }
