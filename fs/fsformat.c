@@ -109,7 +109,7 @@ void init_disk() {
     disk[0].type = BLOCK_BOOT;
 
     // Step 2: Initialize boundary.
-    nbitblock = (NBLOCK + BIT2BLK - 1) / BIT2BLK;
+    nbitblock = (NBLOCK + BIT2BLK - 1) / BIT2BLK;  // ceil(NBLOCK / BIT2BLK)
     nextbno = 2 + nbitblock;
 
     // Step 2: Initialize bitmap blocks.
