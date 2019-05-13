@@ -159,7 +159,7 @@ nop
 END(do_refill)
 
 
-NESTED(do_cons, 0, sp)
+do_cons:
 
 
 li t0, 0xb0000000
@@ -173,7 +173,6 @@ nop
 j ret_from_exception
 nop
 
-END(do_cons)
 
 BUILD_HANDLER reserved do_reserved cli
 BUILD_HANDLER tlb	do_refill	cli
