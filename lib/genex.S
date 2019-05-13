@@ -162,7 +162,7 @@ END(do_refill)
 NESTED(do_cons, 0, sp)
 
 
-li t0, 0xA0000000
+li t0, 0xb0000000
 lb a0, 0(t0)
 
 mfc0 a1, CP0_STATUS
