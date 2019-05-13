@@ -58,14 +58,25 @@ mfc0	t0, CP0_CAUSE
 mfc0	t2, CP0_STATUS
 and	t0, t2
 
+andi t1, t0, STATUSF_IP2
+bnez t1, do_cons
+nop
+
+jal do_cons
+nop
+
 andi	t1, t0, STATUSF_IP4
 bnez	t1, timer_irq
 nop
+nop
+
+
 END(handle_int)
 
 	.extern delay
 
 timer_irq:
+
 
 1:	j	sched_yield
 	nop
@@ -152,6 +163,27 @@ nop
 END(do_refill)
 
 
+NESTED(do_cons, 0, sp)
+
+
+li t0, 0xA0000000
+li t1, 0x10000000
+
+addu t0, t0, t1
+lb a0, 0(t0)
+
+beqz a0, ret_from_exception
+nop
+
+mfc0 a1, CP0_STATUS
+
+jal handle_cons_ir
+nop
+
+j ret_from_exception
+nop
+
+END(do_cons)
 
 BUILD_HANDLER reserved do_reserved cli
 BUILD_HANDLER tlb	do_refill	cli
