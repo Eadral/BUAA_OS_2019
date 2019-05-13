@@ -1,7 +1,7 @@
 #include <printf.h>
 
-int cnt = 0;
-char buffer[256];
+static int cnt = 0;
+static char buffer[256];
 
 
 void handle_cons_ir(char c, int status) {

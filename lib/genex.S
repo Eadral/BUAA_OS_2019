@@ -54,15 +54,13 @@ nop
 SAVE_ALL
 CLI
 .set	at
+
 mfc0	t0, CP0_CAUSE
 mfc0	t2, CP0_STATUS
 and	t0, t2
 
 andi t1, t0, STATUSF_IP2
 bnez t1, do_cons
-nop
-
-jal do_cons
 nop
 
 andi	t1, t0, STATUSF_IP4
@@ -76,7 +74,6 @@ END(handle_int)
 	.extern delay
 
 timer_irq:
-
 
 1:	j	sched_yield
 	nop

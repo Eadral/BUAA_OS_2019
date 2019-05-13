@@ -17,6 +17,7 @@
 	.text
 LEAF(set_cons)
 
+	sw	sp, KERNEL_SP
 setup_c0_status STATUSF_IP2|0x1001 0
 	jr ra
 
