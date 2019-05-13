@@ -66,7 +66,6 @@ nop
 andi	t1, t0, STATUSF_IP4
 bnez	t1, timer_irq
 nop
-nop
 
 
 END(handle_int)
@@ -163,7 +162,7 @@ END(do_refill)
 NESTED(do_cons, 0, sp)
 
 
-li t0, 0xb0000000
+li t0, 0xA0000000
 lb a0, 0(t0)
 
 mfc0 a1, CP0_STATUS
