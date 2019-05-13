@@ -17,7 +17,7 @@
 	.text
 LEAF(set_cons)
 
-setup_c0_status STATUSF_IP2 0
+setup_c0_status STATUSF_IP2|0x1001 0
 	jr ra
 
 	nop
