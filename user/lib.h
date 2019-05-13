@@ -68,6 +68,11 @@ int syscall_cgetc();
 int syscall_write_dev(u_int va, u_int dev, u_int len);
 int syscall_read_dev(u_int va, u_int dev, u_int len);
 
+char ugetc();
+
+void uwritef(char *fmt, ...);
+
+
 // string.c
 int strlen(const char *s);
 char *strcpy(char *dst, const char *src);

@@ -25,9 +25,9 @@ void mips_init()
 	// initialize PIT.
 	kclock_init();
     
-    //ENV_CREATE(user_nothing);
-    ENV_CREATE(user_fstest);
-    ENV_CREATE(fs_serv);
+    ENV_CREATE(user_pingpong2);
+    //ENV_CREATE(user_fstest);
+    //ENV_CREATE(fs_serv);
 
 	// Create process using macro 'ENC_CREATE'
 	// For more details about 'ENV_CREATE', see include/env.h
