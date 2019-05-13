@@ -169,9 +169,6 @@ li t1, 0x10000000
 addu t0, t0, t1
 lb a0, 0(t0)
 
-beqz a0, ret_from_exception
-nop
-
 mfc0 a1, CP0_STATUS
 
 jal handle_cons_ir
