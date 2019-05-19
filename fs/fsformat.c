@@ -261,6 +261,7 @@ void write_file(struct File *dirf, const char *path) {
 //      We ASSUM that this funcion will never fail
 void write_directory(struct File *dirf, char *name) {
     // Your code here
+    //
 }
 
 int main(int argc, char **argv) {

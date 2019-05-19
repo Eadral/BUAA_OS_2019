@@ -6,11 +6,12 @@
 void
 umain(void)
 {
+    int f;
     // THIS IS pingpong2 
     
     writef("START!\n");
 
-    int f = open("/meow", O_WRONLY);
+    f = open("/motd", O_WRONLY);
 
     char s[] = "Meow!"; 
     write(f, s, strlen(s));
@@ -18,14 +19,15 @@ umain(void)
 
     close(f);
     
+
     sync();
 
-    f = open("/meow", O_RDONLY);
+    f = open("/motd", O_RDONLY);
 
     char c;
 
     char s2[256];
-    read(f, s2, strlen(s));
+    read(f, s2, 6);
 
     close(f);
 

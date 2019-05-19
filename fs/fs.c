@@ -519,6 +519,8 @@ file_dirty(struct File *f, u_int offset)
 	}
 
 	*(volatile char *)blk = *(volatile char *)blk;
+    
+	//(* vpt)[VPN(va)] |= PTE_D;
 	return 0;
 }
 
@@ -763,10 +765,10 @@ file_truncate(struct File *f, u_int newsize)
 	}
 
 	if (new_nblocks <= NDIRECT) {
-		f->f_indirect = 0;
 		for (bno = new_nblocks; bno < old_nblocks; bno++) {
 			file_clear_block(f, bno);
 		}
+		f->f_indirect = 0;
 	} else {
 		for (bno = new_nblocks; bno < old_nblocks; bno++) {
 			file_clear_block(f, bno);
