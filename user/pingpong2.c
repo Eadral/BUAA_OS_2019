@@ -7,39 +7,30 @@ void
 umain(void)
 {
     // THIS IS pingpong2 
-	u_int who, i;
-    volatile u_int *x;
-    u_int addr;
-
-	if ((who = fork()) != 0) {
-        // father
-		// get the ball rolling
-        addr = 0x50000000;
-        //syscall_mem_alloc(0, addr, PTE_V | PTE_R);
-        x = addr;
-        *x = 0;
-		ipc_send(who, i, addr, PTE_R);
-		//user_panic("&&&&&&&&&&&&&&&&&&&&&&&&m");
-	} else {
-        // child
-        addr = 0x50000000;
-        //syscall_mem_alloc(0, addr, PTE_V | PTE_R);
-        x = addr;
-        *x = 0;
-        ipc_recv(&who, addr, 0);
-
-    }
     
+    writef("START!\n");
 
-	for (;;) {
-        
-        (*x)++;
-        writef("%x add x. x now: %d\n", syscall_getenvid(), *x);
+    int f = open("/meow", O_WRONLY);
 
-		if (*x >= 100) {
-			return;
-		}
-	}
+    char s[] = "Meow!"; 
+    write(f, s, strlen(s));
+
+
+    close(f);
+    
+    sync();
+
+    f = open("/meow", O_RDONLY);
+
+    char c;
+
+    char s2[256];
+    read(f, s2, strlen(s));
+
+    close(f);
+
+    writef("o: %s\n", s2);
+
 
 }
 

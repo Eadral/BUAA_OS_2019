@@ -301,6 +301,9 @@ serve(void)
 
 		syscall_mem_unmap(0, REQVA);
 	}
+
+    UDEBUG("FS exit!!!");
+
 }
 
 void

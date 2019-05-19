@@ -698,6 +698,14 @@ walk_path(char *path, struct File **pdir, struct File **pfile, char *lastelem)
 int
 file_open(char *path, struct File **file)
 {
+    /*
+    char raw_path[MAXNAMELEN];
+    strcpy(raw_path, path);
+    int r = walk_path(path, 0, file, 0);
+    if (r < 0) {
+        file_create(raw_path, file);
+    }
+    */
 	return walk_path(path, 0, file, 0);
 }
 
