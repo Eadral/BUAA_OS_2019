@@ -13,8 +13,8 @@ struct Dev devfile = {
 	.dev_name =	"file",
 	.dev_read =	file_read,
 	.dev_write =	file_write,
-	.dev_close =	file_close,
 	.dev_stat =	file_stat,
+	.dev_close =	file_close,
 };
 
 

@@ -208,7 +208,7 @@ serve_remove(u_int envid, struct Fsreq_remove *rq)
 	// Step 1: Copy in the path, making sure it's terminated.
     
     strcpy(path, rq->req_path);
-    path[MAXPATHLEN] = '\0';
+    path[MAXPATHLEN - 1] = '\0';
 
 	// Step 2: Remove file from file system and response to user-level process.
     if ( (r = file_remove(path)) < 0 ) {
