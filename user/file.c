@@ -82,6 +82,7 @@ open(const char *path, int mode)
         if (real_fd < 0) {
             return real_fd;
         }
+        fd->fd_offset = 0;
     }
 
 
