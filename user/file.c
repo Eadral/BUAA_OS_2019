@@ -103,6 +103,11 @@ file_close(struct Fd *fd)
 	fileid = ffd->f_fileid;
 	size = ffd->f_file.f_size;
 
+    if (ffd->f_file.f_type == FTYPE_SYML) {
+        struct Fd *real;
+        fd_lookup(ffd->f_file.real_fd, &real);
+        file_close(real);
+    }
 	// Set the start address storing the file's content.
 	va = fd2data(fd);
 
