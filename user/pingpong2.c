@@ -9,6 +9,16 @@ umain(void)
     int f;
     // THIS IS pingpong2 
     
+    f = open("/a.lnk", O_RDONLY);
+
+    char buf[256];
+
+    read(f, buf, 256);
+
+    writef("********* con: %s\n", buf);
+
+    return;
+
     writef("START!\n");
 
     f = open("/motd", O_WRONLY);

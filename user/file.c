@@ -45,6 +45,7 @@ open(const char *path, int mode)
     r = fsipc_open(path, mode, fd);
     if (r < 0)
         return r;
+    
 
 	// Step 3: Set the start address storing the file's content. Set size and fileid correctly.
 	// Hint: Use fd2data to get the start address.
@@ -64,8 +65,24 @@ open(const char *path, int mode)
 
 	// Step 5: Return file descriptor.
 	// Hint: Use fd2num.
-    return fd2num(fd);
+    int f = fd2num(fd);
 	
+    if (ffd->f_file.f_type == FTYPE_SYML) {
+        //UDEBUG("SYML");
+        char real_path[MAXPATHLEN];
+        int n = readn(f, real_path, MAXPATHLEN);
+        while (real_path[n-1] == '\n')
+            n--;
+        //ULOG("len: %d", n);
+        real_path[n] = '\0';
+        //ULOG("real path: %s", real_path);
+        int real_fd = open(real_path, mode);
+        ffd->f_file.real_fd = real_fd;
+        //ULOG("real fd:%d", real_fd);
+    }
+
+
+    return f;
 }
 
 // Overview:
@@ -119,6 +136,11 @@ file_read(struct Fd *fd, void *buf, u_int n, u_int offset)
 	u_int size;
 	struct Filefd *f;
 	f = (struct Filefd *)fd;
+    
+    if (f->f_file.f_type == FTYPE_SYML) {
+        fd_lookup(f->f_file.real_fd, &fd);
+        f = fd;
+    }
 
 	// Avoid reading past the end of file.
 	size = f->f_file.f_size;
@@ -178,6 +200,10 @@ file_write(struct Fd *fd, const void *buf, u_int n, u_int offset)
 
 	f = (struct Filefd *)fd;
 
+    if (f->f_file.f_type == FTYPE_SYML) {
+        fd_lookup(f->f_file.real_fd, &fd);
+        f = fd;
+    }
 	// Don't write more than the maximum file size.
 	tot = offset + n;
 
@@ -204,6 +230,10 @@ file_stat(struct Fd *fd, struct Stat *st)
 
 	f = (struct Filefd *)fd;
 
+    if (f->f_file.f_type == FTYPE_SYML) {
+        fd_lookup(f->f_file.real_fd, &fd);
+        f = fd;
+    }
 	strcpy(st->st_name, (char *)f->f_file.f_name);
 	st->st_size = f->f_file.f_size;
 	st->st_isdir = f->f_file.f_type == FTYPE_DIR;
