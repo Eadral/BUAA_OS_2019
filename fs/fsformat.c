@@ -242,7 +242,17 @@ void write_file(struct File *dirf, const char *path) {
     strcpy(target->f_name, fname);
     
     target->f_size = lseek(fd, 0, SEEK_END);
-    target->f_type = FTYPE_REG;
+    const char *ext = strrchr(fname, '.');
+    if (ext)
+        ext++;
+    else
+        ext = path;
+    //printf("%s\n", ext);
+    if (strcmp(ext, "lnk") == 0) {
+        target->f_type = FTYPE_SYML;
+        //printf("path %s", path);
+    } else
+        target->f_type = FTYPE_REG;
     
     // Start reading file.
     lseek(fd, 0, SEEK_SET);
