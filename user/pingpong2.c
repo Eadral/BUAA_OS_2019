@@ -20,8 +20,6 @@ umain(void)
     close(f);
     
 
-    sync();
-
     f = open("/motd", O_RDONLY);
 
     char c;

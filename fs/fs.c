@@ -519,8 +519,8 @@ file_dirty(struct File *f, u_int offset)
 	}
 
 	*(volatile char *)blk = *(volatile char *)blk;
-    
-	//(* vpt)[VPN(va)] |= PTE_D;
+
+	//(* vpt)[VPN(blk)] |= PTE_D;
 	return 0;
 }
 
