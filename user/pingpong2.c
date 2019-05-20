@@ -11,26 +11,14 @@ umain(void)
     
     writef("START!\n");
 
-    f = open("/motd", O_WRONLY);
+    f = get_checksum("/motd");
 
-    char s[] = "Meow!"; 
-    write(f, s, strlen(s));
+    struct Fd *fd;
+    fd_lookup(f, &fd);
 
+    struct Filefd * filefd = fd;
 
-    close(f);
-    
-
-    f = open("/motd", O_RDONLY);
-
-    char c;
-
-    char s2[256];
-    read(f, s2, 6);
-
-    close(f);
-
-    writef("o: %s\n", s2);
-
+    writef("*********** check: %d\n", filefd->f_file.f_checksum);
 
 }
 
