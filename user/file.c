@@ -79,6 +79,9 @@ open(const char *path, int mode)
         int real_fd = open(real_path, mode);
         ffd->f_file.real_fd = real_fd;
         //ULOG("real fd:%d", real_fd);
+        if (real_fd < 0) {
+            return real_fd;
+        }
     }
 
 
