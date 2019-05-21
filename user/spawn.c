@@ -119,19 +119,39 @@ int spawn(char *prog, char **argv)
 	// Note 0: some variable may be not used,you can cancel them as you like
 	// Step 1: Open the file specified by `prog` (prog is the path of the program)
 	if((r=open(prog, O_RDONLY))<0){
-		user_panic("spawn ::open line 102 RDONLY wrong !\n");
+		writef("spawn ::open line 102 RDONLY wrong !\n");
 		return r;
 	}
 	// Your code begins here
-	// Before Step 2 , You had better check the "target" spawned is a execute bin 
+	fd = r;
+    // Before Step 2 , You had better check the "target" spawned is a execute bin
 	// Step 2: Allocate an env (Hint: using syscall_env_alloc())
-	// Step 3: Using init_stack(...) to initialize the stack of the allocated env
-	// Step 3: Map file's content to new env's text segment
+	r = syscall_env_alloc();
+    if (r < 0) {
+        writef("env_alloc failed");
+        return r;
+    }
+    child_envid = r;
+    // Step 3: Using init_stack(...) to initialize the stack of the allocated env
+	init_stack(child_envid, argv, &esp);
+    // Step 3: Map file's content to new env's text segment
 	//        Hint 1: what is the offset of the text segment in file? try to use objdump to find out.
 	//        Hint 2: using read_map(...)
 	//		  Hint 3: Important!!! sometimes ,its not safe to use read_map ,guess why 
 	//				  If you understand, you can achieve the "load APP" with any method
-	// Note1: Step 1 and 2 need sanity check. In other words, you should check whether
+	size = ((struct Filefd*)num2fd(fd))->f_file.f_size;
+    text_start = 0;
+    for (i = 0x1000; i < size; i+=BY2PG) {
+        r = read_map(fd, i, &blk);
+        if (r < 0) {
+            writef("read_map railed");
+            return r;
+        }
+
+        syscall_mem_map(0, blk, child_envid, UTEXT+text_start, PTE_R);
+        text_start += BY2PG;
+    }
+    // Note1: Step 1 and 2 need sanity check. In other words, you should check whether
 	//       the file is opened successfully, and env is allocated successfully.
 	// Note2: You can achieve this func in any way ，remember to ensure the correctness
 	//        Maybe you can review lab3 

@@ -104,14 +104,28 @@ again:
 				writef("syntax error: < not followed by word\n");
 				exit();
 			}
+
+            fdnum = open(t, O_RDONLY);
+            dup(fdnum, 0);
+            close(fdnum);
 			// Your code here -- open t for reading,
 			// dup it onto fd 0, and then close the fd you got.
-			user_panic("< redirection not implemented");
+			//user_panic("< redirection not implemented");
 			break;
 		case '>':
 			// Your code here -- open t for writing,
 			// dup it onto fd 1, and then close the fd you got.
-			user_panic("> redirection not implemented");
+			
+			if(gettoken(0, &t) != 'w'){
+				writef("syntax error: < not followed by word\n");
+				exit();
+			}
+
+            fdnum = open(t, O_WRONLY);
+            dup(fdnum, 1);
+            close(fdnum);
+            
+            //user_panic("> redirection not implemented");
 			break;
 		case '|':
 			// Your code here.
@@ -129,7 +143,32 @@ again:
 			//		set "rightpipe" to the child envid
 			//		goto runit, to execute this piece of the pipeline
 			//			and then wait for the right side to finish
-			user_panic("| not implemented");
+			r = pipe(p);
+            if (r < 0) {
+                writef("pipe failed");
+                exit();
+            }
+            r = fork();
+            if (r < 0) {
+                writef("fork failed");
+                exit();
+            }
+            if (r == 0) {
+                // child
+                dup(p[0], 0);
+                close(p[0]);
+                close(p[1]);
+                goto again;
+            } else {
+                // father 
+                dup(p[1], 1);
+                close(p[1]);
+                close(p[0]);
+                goto runit;
+            }
+            
+            
+            //user_panic("| not implemented");
 			break;
 		}
 	}

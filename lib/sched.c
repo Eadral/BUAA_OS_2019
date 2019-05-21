@@ -41,5 +41,6 @@ void sched_yield(void) {
     //struct Env* t = NULL;
     //printf("c_list: %d \n", c_list);
     //printf("pc: %x ", e->env_tf.pc);
+    e->env_runs++;
     env_run(e);
 }

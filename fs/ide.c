@@ -89,7 +89,7 @@ ide_write(u_int diskno, u_int secno, void *src, u_int nsecs)
 	int offset_begin = secno * 0x200;
 	int offset_end = offset_begin + nsecs * 0x200;
 	int offset = 0;
-	writef("diskno: %d\n", diskno);
+	//writef("diskno: %d\n", diskno);
 	int r = 0;
     while (offset_begin + offset < offset_end) {
 	    // copy data from source array to disk buffer.

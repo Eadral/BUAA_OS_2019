@@ -285,7 +285,7 @@ read_super(void)
 		user_panic("file system is too large");
 	}
 
-	writef("superblock is good\n");
+	//writef("superblock is good\n");
 }
 
 // Overview:
@@ -320,7 +320,7 @@ read_bitmap(void)
 		user_assert(!block_is_free(i + 2));
 	}
 
-	writef("read_bitmap is good\n");
+	//writef("read_bitmap is good\n");
 }
 
 // Overview:
@@ -364,7 +364,7 @@ void
 fs_init(void)
 {
 	read_super();
-	check_write_block();
+	//check_write_block();
 	read_bitmap();
 }
 

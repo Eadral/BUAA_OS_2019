@@ -311,14 +311,14 @@ umain(void)
 {
 	user_assert(sizeof(struct File) == BY2FILE);
 
-	writef("FS is running\n");
+	//writef("FS is running\n");
 
-	writef("FS can do I/O\n");
+	//writef("FS can do I/O\n");
 
 	serve_init();
 
 	fs_init();
-	fs_test();
+	//fs_test();
 
 	serve();
 }
