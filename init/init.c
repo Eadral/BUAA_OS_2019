@@ -30,6 +30,7 @@ void mips_init()
 	//ENV_CREATE(user_testspawn);
 	//ENV_CREATE(user_testpipe);
 	//ENV_CREATE(user_testpiperace);
+	//ENV_CREATE(user_testbss);
 	ENV_CREATE(user_icode);
 	trap_init();
 	kclock_init();

@@ -102,20 +102,59 @@ int
 usr_load_elf(int fd , Elf32_Phdr *ph, int child_envid){
 	//Hint: maybe this function is useful 
 	//      If you want to use this func, you should fill it ,it's not hard
-	return 0;
+    u_long va = ph->p_vaddr;
+    u_int sgsize = ph->p_memsz;
+    u_int bin_size = ph->p_filesz;
+    void *blk;
+    int r;
+    int i = 0;
+    u_int offset = va - ROUNDDOWN(va, BY2PG);
+/*
+    if (offset != 0) {
+        u_int partial = BY2PG - offset;
+        if (bin_size < partial)
+            partial = bin_size;
+        r = read_map(fd, i, &blk);
+        UERR(r);
+        syscall_mem_map(0, blk, child_envid, va+i, PTE_R);
+        i += partial;
+    }
+
+    for (; bin_size > BY2PG && i < bin_size-BY2PG; i+= BY2PG) {
+        r = read_map(fd, i, &blk);
+        UERR(r);
+        syscall_mem_map(0, blk, child_envid, va+i, PTE_R);
+    }
+
+    if (i < bin_size) {
+        r = read_map(fd, i, &blk);
+        UERR(r);
+        syscall_mem_map(0, blk, child_envid, va+i, PTE_R);
+
+        i += BY2PG;
+    }
+*/
+    while (i < sgsize) {
+        syscall_mem_alloc(child_envid, va+i, PTE_R);
+        ULOG("va: %x", va+i);
+        i += BY2PG;
+    }
+
+
+    return 0;
 }
 
 int spawn(char *prog, char **argv)
 {
-	u_char elfbuf[512];
+	//u_char elfbuf[512];
 	int r;
 	int fd;
 	u_int child_envid;
 	int size, text_start;
 	u_int i, *blk;
 	u_int esp;
-	Elf32_Ehdr* elf;
-	Elf32_Phdr* ph;
+	//Elf32_Ehdr* elf;
+	//Elf32_Phdr* ph;
 	// Note 0: some variable may be not used,you can cancel them as you like
 	// Step 1: Open the file specified by `prog` (prog is the path of the program)
 	if((r=open(prog, O_RDONLY))<0){
@@ -139,7 +178,47 @@ int spawn(char *prog, char **argv)
 	//        Hint 2: using read_map(...)
 	//		  Hint 3: Important!!! sometimes ,its not safe to use read_map ,guess why 
 	//				  If you understand, you can achieve the "load APP" with any method
-	size = ((struct Filefd*)num2fd(fd))->f_file.f_size;
+    u_char elfbuf[1024*1024];
+    size = ((struct Filefd*)num2fd(fd))->f_file.f_size; 
+    r = read(fd, elfbuf, size);
+    if (r < 0) {
+        writef("Load file failed!");
+        return r;
+    }
+    // from env.c
+    //
+    Elf32_Ehdr *ehdr = (Elf32_Ehdr *)elfbuf;
+    Elf32_Phdr *phdr = NULL;
+    
+    u_char *ptr_ph_table = NULL;
+    Elf32_Half ph_entry_count;
+    Elf32_Half ph_entry_size;
+    
+    if (size < 4 || !usr_is_elf_format(elfbuf)) {
+        writef("size || !is_elf");
+        return -1;
+    }
+
+    ptr_ph_table = elfbuf + ehdr->e_phoff;
+    ph_entry_count = ehdr->e_phnum;
+    ph_entry_size = ehdr->e_phentsize;
+    /*
+    while (ph_entry_count--) {
+        
+        phdr = (Elf32_Phdr *)ptr_ph_table;
+
+        if (phdr->p_type == PT_LOAD) {
+            r = usr_load_elf(fd, phdr, child_envid);
+            if (r < 0) {
+                writef("usr_load_elf failed");
+            }
+        }
+
+        ptr_ph_table += ph_entry_size;
+
+    }
+    */
+
     text_start = 0;
     for (i = 0x1000; i < size; i+=BY2PG) {
         r = read_map(fd, i, &blk);
@@ -151,6 +230,27 @@ int spawn(char *prog, char **argv)
         syscall_mem_map(0, blk, child_envid, UTEXT+text_start, PTE_R);
         text_start += BY2PG;
     }
+    
+    while (ph_entry_count--) {
+        
+        phdr = (Elf32_Phdr *)ptr_ph_table;
+
+        if (phdr->p_type == PT_LOAD) {
+            if (0x1000 + phdr->p_memsz > size)
+                size = 0x1000 + phdr->p_memsz;
+            ULOG("size: %x", size);
+            ULOG("mem: %x", 0x1000+phdr->p_memsz);
+        }
+
+        ptr_ph_table += ph_entry_size;
+
+    }
+
+    for (; i < size; i+= BY2PG) {
+        syscall_mem_alloc(child_envid, UTEXT+text_start, PTE_R);
+        text_start += BY2PG;
+    }
+
     // Note1: Step 1 and 2 need sanity check. In other words, you should check whether
 	//       the file is opened successfully, and env is allocated successfully.
 	// Note2: You can achieve this func in any way ，remember to ensure the correctness
