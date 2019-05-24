@@ -137,14 +137,10 @@ usr_load_elf(int fd , Elf32_Phdr *ph, int child_envid){
 
     if (i < bin_size) {
 
-        //ULOG("va: %x", va+i);
         r = read_map(fd, off+i, &blk);
         u_int partial = bin_size - i;
         if (partial > 0) {
-            //ULOG("partial: %X", partial);
-            //ULOG("some: %x", va+i+BY2PG - partial);
             user_bzero((u_char*)blk + partial, BY2PG - partial);
-            //ULOG("some_end: %x", va+i+BY2PG);
         }
         UERR(r);
         syscall_mem_map(0, blk, child_envid, va+i, PTE_R);
