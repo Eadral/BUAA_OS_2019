@@ -24,8 +24,13 @@ sum(char *s, int n)
 	int i, tot;
 
 	tot = 0;
-	for(i=0; i<n; i++)
+	for(i=0; i<n; i++) {
 		tot ^= MY_MUL(i,s[i]);
+        if (s[i] != 0) {
+        
+            //writef("%x: %x ;", &(s[i]), s[i]);
+        }
+    }
 	return tot;
 }
 		
@@ -46,6 +51,8 @@ umain(int argc, char **argv)
 		writef("bss is not initialized: wanted sum 0 got %08x\n", x);
 	else
 		writef("init: bss seems okay\n");
+    //ULOG("bss: %x", bss);
+
 
 	writef("init: args:");
 	for (i=0; i<argc; i++)

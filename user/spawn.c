@@ -105,41 +105,60 @@ usr_load_elf(int fd , Elf32_Phdr *ph, int child_envid){
     u_long va = ph->p_vaddr;
     u_int sgsize = ph->p_memsz;
     u_int bin_size = ph->p_filesz;
+    u_int off = ph->p_offset;
+    
+
+    //ULOG("loading: %x", va);
+    //ULOG("sgsize: %x", sgsize);
+    //ULOG("bin_size: %x", bin_size);
+
     void *blk;
     int r;
     int i = 0;
     u_int offset = va - ROUNDDOWN(va, BY2PG);
-/*
+    i = i-offset;
+    /*
     if (offset != 0) {
         u_int partial = BY2PG - offset;
         if (bin_size < partial)
             partial = bin_size;
-        r = read_map(fd, i, &blk);
+        r = read_map(fd, off+i, &blk);
         UERR(r);
         syscall_mem_map(0, blk, child_envid, va+i, PTE_R);
         i += partial;
     }
+    */
 
     for (; bin_size > BY2PG && i < bin_size-BY2PG; i+= BY2PG) {
-        r = read_map(fd, i, &blk);
+        r = read_map(fd, off+i, &blk);
         UERR(r);
         syscall_mem_map(0, blk, child_envid, va+i, PTE_R);
     }
 
     if (i < bin_size) {
-        r = read_map(fd, i, &blk);
+
+        //ULOG("va: %x", va+i);
+        r = read_map(fd, off+i, &blk);
+        u_int partial = bin_size - i;
+        if (partial > 0) {
+            //ULOG("partial: %X", partial);
+            //ULOG("some: %x", va+i+BY2PG - partial);
+            user_bzero((u_char*)blk + partial, BY2PG - partial);
+            //ULOG("some_end: %x", va+i+BY2PG);
+        }
         UERR(r);
         syscall_mem_map(0, blk, child_envid, va+i, PTE_R);
 
         i += BY2PG;
     }
-*/
+
     while (i < sgsize) {
         syscall_mem_alloc(child_envid, va+i, PTE_R);
-        ULOG("va: %x", va+i);
+        //ULOG("va: %x", va+i);
         i += BY2PG;
     }
-
+    
+    //ULOG("end_at: %x", va+i);
 
     return 0;
 }
@@ -202,7 +221,7 @@ int spawn(char *prog, char **argv)
     ptr_ph_table = elfbuf + ehdr->e_phoff;
     ph_entry_count = ehdr->e_phnum;
     ph_entry_size = ehdr->e_phentsize;
-    /*
+    
     while (ph_entry_count--) {
         
         phdr = (Elf32_Phdr *)ptr_ph_table;
@@ -217,8 +236,9 @@ int spawn(char *prog, char **argv)
         ptr_ph_table += ph_entry_size;
 
     }
-    */
-
+    
+    
+    /*
     text_start = 0;
     for (i = 0x1000; i < size; i+=BY2PG) {
         r = read_map(fd, i, &blk);
@@ -250,6 +270,7 @@ int spawn(char *prog, char **argv)
         syscall_mem_alloc(child_envid, UTEXT+text_start, PTE_R);
         text_start += BY2PG;
     }
+    */
 
     // Note1: Step 1 and 2 need sanity check. In other words, you should check whether
 	//       the file is opened successfully, and env is allocated successfully.
