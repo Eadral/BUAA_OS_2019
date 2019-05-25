@@ -121,7 +121,7 @@ again:
 				exit();
 			}
 
-            fdnum = open(t, O_WRONLY);
+            fdnum = open(t, O_RDWR);
             dup(fdnum, 1);
             close(fdnum);
             
@@ -164,6 +164,7 @@ again:
                 dup(p[1], 1);
                 close(p[1]);
                 close(p[0]);
+                rightpipe = r;
                 goto runit;
             }
             
