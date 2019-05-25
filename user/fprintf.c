@@ -1,6 +1,6 @@
 #include "lib.h"
 
-int j = 0;
+static int j = 0;
 
 static void user_out2string(void *arg, char *s, int l)
 {
