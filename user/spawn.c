@@ -137,6 +137,7 @@ usr_load_elf(int fd , Elf32_Phdr *ph, int child_envid){
 
     if (i < bin_size) {
 
+        //ULOG("va: %x", va+i);
         r = read_map(fd, off+i, &blk);
         u_int partial = bin_size - i;
         if (partial > 0) {
@@ -193,9 +194,9 @@ int spawn(char *prog, char **argv)
 	//        Hint 2: using read_map(...)
 	//		  Hint 3: Important!!! sometimes ,its not safe to use read_map ,guess why 
 	//				  If you understand, you can achieve the "load APP" with any method
-    u_char elfbuf[1024*1024];
+    u_char elfbuf[4*1024*1024];
     size = ((struct Filefd*)num2fd(fd))->f_file.f_size; 
-    r = read(fd, elfbuf, size);
+    r = read(fd, elfbuf, sizeof(elfbuf));
     if (r < 0) {
         writef("Load file failed!");
         return r;
@@ -213,7 +214,12 @@ int spawn(char *prog, char **argv)
         writef("size || !is_elf");
         return -1;
     }
-
+    
+    seek(fd, ehdr->e_phoff);
+    //r = read(fd, elfbuf, size);
+    if (r < 0) {
+        syscall_panic("seek_read_failed");
+    }
     ptr_ph_table = elfbuf + ehdr->e_phoff;
     ph_entry_count = ehdr->e_phnum;
     ph_entry_size = ehdr->e_phentsize;
