@@ -130,19 +130,21 @@ piperead(struct Fd *fd, void *vbuf, u_int n, u_int offset)
     if (_pipeisclosed(fd, p)) {
         return 0;
     }
-
-    while (p->p_rpos >= p->p_wpos) {
-        syscall_yield();
-        if (_pipeisclosed(fd, p)) {
-            return 0;
-        }
-    }
     
-    while (n-- && p->p_rpos < p->p_wpos) {
-        rbuf[offset+i] = p->p_buf[p->p_rpos%BY2PIPE];
-        p->p_rpos = (p->p_rpos+1) % BY2PIPE;
-        i++;
+    for (i = 0; i < n; i++) {
+        
+        while (p->p_rpos >= p->p_wpos) {
+            if (_pipeisclosed(fd, p)) {
+                return i;
+            }
+            syscall_yield();
+        }
+
+        *rbuf = p->p_buf[p->p_rpos % BY2PIPE];
+        rbuf++;
+        p->p_rpos++;
     }
+
     
     return i;
 	//user_panic("piperead not implemented");
@@ -169,24 +171,23 @@ pipewrite(struct Fd *fd, const void *vbuf, u_int n, u_int offset)
     if (_pipeisclosed(fd, p)) {
         return 0;
     }
-
     
-    while (n--) {
+    for (i = 0; i < n; i++) {
+        
         while (p->p_wpos - p->p_rpos >= BY2PIPE) {
-            syscall_yield();
             if (_pipeisclosed(fd, p)) {
-                return 0;
+                return i;
             }
+            syscall_yield();
         }
 
-        p->p_buf[p->p_wpos%BY2PIPE] = wbuf[offset+i];
-        p->p_wpos = (p->p_wpos+1) % BY2PIPE;
-        i++;
+        p->p_buf[p->p_wpos % BY2PIPE] = *wbuf;
+        wbuf++;
+        p->p_wpos++;
     }
-	
-	//user_panic("pipewrite not implemented");
 
-	return i;
+    
+	return n;
 }
 
 static int
