@@ -80,6 +80,7 @@ gettoken(char *s, char **p1)
 void
 runcmd(char *s)
 {
+    //ULOG("runcmd: %s", s);
 	char *argv[MAXARGS], *t;
 	int argc, c, i, r, p[2], fd, rightpipe;
 	int fdnum;
@@ -277,23 +278,35 @@ umain(int argc, char **argv)
 	}
 	if(interactive == '?')
 		interactive = iscons(0);
+    //ULOG("interactive: %d", interactive);
 	for(;;){
 		if (interactive)
 			fwritef(1, "\n$ ");
 		readline(buf, sizeof buf);
-		
+	    //ULOG("buf: %s", buf);	
 		if (buf[0] == '#')
 			continue;
 		if (echocmds)
 			fwritef(1, "# %s\n", buf);
+        //UDEBUG("before fork");
+        if (!interactive) {
+            runcmd(buf);
+            exit();
+        }
 		if ((r = fork()) < 0)
 			user_panic("fork: %e", r);
+        //UDEBUG("after fork");
 		if (r == 0) {
+            //UDEBUG("before runcmd");
 			runcmd(buf);
 			exit();
 			return;
-		} else
+		} else {
+            //UDEBUG("before wait");
 			wait(r);
+        }
+        if (!interactive)
+            exit();
 	}
 }
 

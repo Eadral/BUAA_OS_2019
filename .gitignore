@@ -21,3 +21,4 @@ gxemul/vmlinux
 
 *.img
 
+outputfile
