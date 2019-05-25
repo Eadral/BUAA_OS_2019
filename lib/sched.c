@@ -17,7 +17,8 @@ int c_list = 0;
 struct Env* e = NULL;
 
 void sched_yield(void) {
-    if (count == 0 || curenv == NULL || e->env_status == ENV_NOT_RUNNABLE) {
+    e = curenv;
+    if (count == 0 || e == NULL || e->env_status == ENV_NOT_RUNNABLE) {
         do {
                 //printf("x");
             e = LIST_FIRST(&env_sched_list[c_list]);

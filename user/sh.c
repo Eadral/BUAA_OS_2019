@@ -1,7 +1,7 @@
 #include "lib.h"
 #include <args.h>
 
-int debug = 0;
+int debug = 1;
 
 //
 // get the next token from string s
@@ -76,6 +76,8 @@ gettoken(char *s, char **p1)
 	return c;
 }
 
+int flag = 0;
+
 #define MAXARGS 16
 void
 runcmd(char *s)
@@ -92,6 +94,7 @@ again:
 		c = gettoken(0, &t);
 		switch(c){
 		case 0:
+            UDEBUG("got 0");
 			goto runit;
 		case 'w':
 			if(argc == MAXARGS){
@@ -101,6 +104,7 @@ again:
 			argv[argc++] = t;
 			break;
 		case '<':
+            UDEBUG("got <y");
 			if(gettoken(0, &t) != 'w'){
 				writef("syntax error: < not followed by word\n");
 				exit();
@@ -114,6 +118,7 @@ again:
 			//user_panic("< redirection not implemented");
 			break;
 		case '>':
+            UDEBUG("got >");
 			// Your code here -- open t for writing,
 			// dup it onto fd 1, and then close the fd you got.
 			
@@ -129,6 +134,7 @@ again:
             //user_panic("> redirection not implemented");
 			break;
 		case '|':
+            UDEBUG("got |");
 			// Your code here.
 			// 	First, allocate a pipe.
 			//	Then fork.
@@ -190,12 +196,13 @@ runit:
 
 	if ((r = spawn(argv[0], argv)) < 0)
 		writef("spawn %s: %e\n", argv[0], r);
-	close_all();
+	if (!flag)
+        close_all();
 	if (r >= 0) {
 		if (debug) writef("[%08x] WAIT %s %08x\n", env->env_id, argv[0], r);
 		wait(r);
 	}
-	if (rightpipe) {
+	if (rightpipe && !flag) {
 		if (debug) writef("[%08x] WAIT right-pipe %08x\n", env->env_id, rightpipe);
 		wait(rightpipe);
 	}
@@ -290,6 +297,7 @@ umain(int argc, char **argv)
 			fwritef(1, "# %s\n", buf);
         //UDEBUG("before fork");
         if (!interactive) {
+            flag = 1;
             runcmd(buf);
             continue;
         }
