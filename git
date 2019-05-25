@@ -1,0 +1,6 @@
+git add .
+rm fs/outputfile
+git commit -m "AUTO"
+git push origin lab6
+touch fs/outputfile
+
