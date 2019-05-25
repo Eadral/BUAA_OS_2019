@@ -198,7 +198,7 @@ runit:
 		writef("spawn %s: %e\n", argv[0], r);
 	if (!flag)
         close_all();
-	if (r >= 0) {
+	if (r >= 0 && !flag) {
 		if (debug) writef("[%08x] WAIT %s %08x\n", env->env_id, argv[0], r);
 		wait(r);
 	}
@@ -206,8 +206,9 @@ runit:
 		if (debug) writef("[%08x] WAIT right-pipe %08x\n", env->env_id, rightpipe);
 		wait(rightpipe);
 	}
-
-	//exit();
+    
+    if (!flag)
+	exit();
 }
 
 void
