@@ -21,4 +21,4 @@ gxemul/vmlinux
 
 *.img
 
-outputfile
+fs/outputfile

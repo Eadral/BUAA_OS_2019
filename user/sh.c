@@ -80,7 +80,7 @@ gettoken(char *s, char **p1)
 void
 runcmd(char *s)
 {
-    //ULOG("runcmd: %s", s);
+    ULOG("runcmd: %s", s);
 	char *argv[MAXARGS], *t;
 	int argc, c, i, r, p[2], fd, rightpipe;
 	int fdnum;
@@ -200,7 +200,7 @@ runit:
 		wait(rightpipe);
 	}
 
-	exit();
+	//exit();
 }
 
 void
@@ -291,7 +291,7 @@ umain(int argc, char **argv)
         //UDEBUG("before fork");
         if (!interactive) {
             runcmd(buf);
-            exit();
+            continue;
         }
 		if ((r = fork()) < 0)
 			user_panic("fork: %e", r);
@@ -305,8 +305,6 @@ umain(int argc, char **argv)
             //UDEBUG("before wait");
 			wait(r);
         }
-        if (!interactive)
-            exit();
 	}
 }
 
