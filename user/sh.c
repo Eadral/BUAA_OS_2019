@@ -1,7 +1,7 @@
 #include "lib.h"
 #include <args.h>
 
-int debug = 1;
+int debug = 0;
 
 //
 // get the next token from string s
@@ -82,7 +82,7 @@ int flag = 0;
 void
 runcmd(char *s)
 {
-    ULOG("runcmd: %s", s);
+    //ULOG("runcmd: %s", s);
 	char *argv[MAXARGS], *t;
 	int argc, c, i, r, p[2], fd, rightpipe;
 	int fdnum;
@@ -94,7 +94,7 @@ again:
 		c = gettoken(0, &t);
 		switch(c){
 		case 0:
-            UDEBUG("got 0");
+            //UDEBUG("got 0");
 			goto runit;
 		case 'w':
 			if(argc == MAXARGS){
@@ -104,7 +104,7 @@ again:
 			argv[argc++] = t;
 			break;
 		case '<':
-            UDEBUG("got <y");
+            //UDEBUG("got <y");
 			if(gettoken(0, &t) != 'w'){
 				writef("syntax error: < not followed by word\n");
 				exit();
@@ -118,7 +118,7 @@ again:
 			//user_panic("< redirection not implemented");
 			break;
 		case '>':
-            UDEBUG("got >");
+            //UDEBUG("got >");
 			// Your code here -- open t for writing,
 			// dup it onto fd 1, and then close the fd you got.
 			
@@ -134,7 +134,7 @@ again:
             //user_panic("> redirection not implemented");
 			break;
 		case '|':
-            UDEBUG("got |");
+            //UDEBUG("got |");
 			// Your code here.
 			// 	First, allocate a pipe.
 			//	Then fork.
