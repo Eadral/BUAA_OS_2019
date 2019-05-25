@@ -20,7 +20,6 @@ int fwritef(int fd, const char *fmt, ...)
 {
     j = 0;
 	char buf[512] = {0};
-    user_bzero(buf, sizeof(buf));
 	va_list ap;
 	va_start(ap, fmt);
 	user_lp_Print(user_out2string, buf, fmt, ap);
