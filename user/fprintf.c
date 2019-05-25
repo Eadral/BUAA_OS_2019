@@ -1,25 +1,24 @@
 #include "lib.h"
 
-
+int j = 0;
 
 static void user_out2string(void *arg, char *s, int l)
 {
     int i;
-    int j = 0;
 	char * b = (char *)arg;
     // special termination call
     if ((l==1) && (s[0] == '\0')) return;
     
-    while (b[j] != '\0')
-        j++;
     for (i=0; i< l; i++) {
-	    b[j+i]=s[i];
+	    b[j]=s[i];
+        j++;
     }
 }
 
 
 int fwritef(int fd, const char *fmt, ...)
 {
+    j = 0;
 	char buf[512] = {0};
     user_bzero(buf, sizeof(buf));
 	va_list ap;
