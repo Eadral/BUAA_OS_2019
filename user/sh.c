@@ -1,7 +1,7 @@
 #include "lib.h"
 #include <args.h>
 
-int debug = 1;
+int debug = 0;
 
 //
 // get the next token from string s
