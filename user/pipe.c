@@ -140,8 +140,7 @@ piperead(struct Fd *fd, void *vbuf, u_int n, u_int offset)
             syscall_yield();
         }
 
-        *rbuf = p->p_buf[p->p_rpos % BY2PIPE];
-        rbuf++;
+        rbuf[i] = p->p_buf[p->p_rpos % BY2PIPE];
         p->p_rpos++;
     }
 
@@ -181,8 +180,7 @@ pipewrite(struct Fd *fd, const void *vbuf, u_int n, u_int offset)
             syscall_yield();
         }
 
-        p->p_buf[p->p_wpos % BY2PIPE] = *wbuf;
-        wbuf++;
+        p->p_buf[p->p_wpos % BY2PIPE] = wbuf[i];
         p->p_wpos++;
     }
 

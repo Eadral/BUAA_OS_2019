@@ -150,6 +150,7 @@ int sys_mem_alloc(int sysno, u_int envid, u_int va, u_int perm)
 	struct Env *env;
 	struct Page *ppage;
 	int ret;
+    perm |= PTE_V;
     if (va >= UTOP) {
         panic("va > UTOP");
     }
@@ -191,7 +192,8 @@ int sys_mem_map(int sysno, u_int srcid, u_int srcva, u_int dstid, u_int dstva,
 	struct Env *dstenv;
 	struct Page *ppage;
 	Pte *ppte;
-
+    
+    perm |= PTE_V;
 	ppage = NULL;
 	ret = 0;
 	round_srcva = ROUNDDOWN(srcva, BY2PG);
