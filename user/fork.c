@@ -98,7 +98,7 @@ pgfault(u_int va)
     //map the new page at a temporary place
     //u_int tmp = UXSTACKTOP - BY2PG;
 
-    u_int tmp = UTEXT - BY2PG;
+    u_int tmp = UTEXT - 2*BY2PG;
     r = syscall_mem_alloc(0, tmp, perm & (~PTE_COW));
 	UERR(r);
     //copy the content
@@ -132,20 +132,27 @@ pgfault(u_int va)
 static void
 duppage(u_int envid, u_int pn)
 {
+    //ULOG("va: %x", pn << PGSHIFT);
     u_int pte = (*vpt)[pn];
 	u_int addr = pn * BY2PG;
 	u_int perm = pte & 0xFFF;
     
 
     if ((perm & PTE_V) && (perm & PTE_LIBRARY) && (perm & PTE_R)) {
+        //UDEBUG("1");
         syscall_mem_map(0, addr, envid, addr, perm); 
     } else if ((perm & PTE_V) && ((perm & PTE_COW) || (perm & PTE_R))) {
+        //UDEBUG("2");
         syscall_mem_map(0, addr, envid, addr, perm | PTE_COW); 
-        syscall_mem_map(0, addr, 0, addr, perm | PTE_COW);
+        //UDEBUG("2-1");
+        //syscall_mem_map(0, addr, 0, addr, perm | PTE_COW);
+        //UDEBUG("2-2");
     } else {
+        //UDEBUG("3");
         syscall_mem_map(0, addr, envid, addr, perm); 
     }
     
+    //UDEBUG("exit duppage");
 	//	user_panic("duppage not implemented");
 }
 
@@ -171,7 +178,9 @@ fork(void)
 	//The parent installs pgfault using set_pgfault_handler
     set_pgfault_handler(pgfault);
 	//alloc a new alloc
+    //UDEBUG("before syscall_env_alloc");
     newenvid = syscall_env_alloc();
+    //UDEBUG("after syscall_env_alloc");
     if (newenvid == 0) {
         // child
         env = &envs[ENVX(syscall_getenvid())];
@@ -181,11 +190,16 @@ fork(void)
         // father
         u_int pn;
         for (i = 0; i < 1024; i++) {
+            //ULOG("i: %d", i);
             if ((*vpd)[i] & PTE_V) {
                 for (j = 0; j < 1024; j++) {
+                    //ULOG("j: %d", j);
                     pn = (i << 10) + j;
-                    if ((pn << PGSHIFT) >= UTOP-2*BY2PG)
+                    //ULOG("va: %x", pn << PGSHIFT);
+                    if ((pn << PGSHIFT) >= UTOP-2*BY2PG) {
+                        //UDEBUG("break");
                         break;
+                    }
                     if ((*vpt)[pn] & PTE_V) {
                         duppage(newenvid, pn);
                     }
@@ -193,6 +207,7 @@ fork(void)
                 }
             }
         }
+        //UDEBUG("after duupage");
 
         int r;
         r = syscall_mem_alloc(newenvid, UXSTACKTOP - BY2PG, PTE_V | PTE_R);
@@ -203,7 +218,7 @@ fork(void)
         UERR(r);
     }
 
-
+    //UDEBUG("exit fork");
 	return newenvid;
 }
 

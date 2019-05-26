@@ -204,18 +204,23 @@ int sys_mem_map(int sysno, u_int srcid, u_int srcva, u_int dstid, u_int dstva,
         panic("sys_mem_map");
         return -E_INVAL;
     }
+    //DEBUG("before envid2env");
     ret = envid2env(srcid, &srcenv, 1);
     ERRR(ret);
     ret = envid2env(dstid, &dstenv, 1);
     ERRR(ret);
+    //DEBUG("before page_lookup");
     ppage = page_lookup(srcenv->env_pgdir, round_srcva, 0);
     if (ppage == 0) {
         panic("ppage is 0");
         
     }
+    //DEBUG("before page_insert");
     ret = page_insert(dstenv->env_pgdir, ppage, round_dstva, perm);
+    //DEBUG("after page_insert");
     ERRR(ret);
     tlb_out(PTE_ADDR(round_dstva) | GET_ENV_ASID(dstenv->env_id));
+    //DEBUG("exit sys_mem_map");
 	return 0;
 }
 

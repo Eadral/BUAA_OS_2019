@@ -297,7 +297,7 @@ umain(int argc, char **argv)
 		if (echocmds)
 			fwritef(1, "# %s\n", buf);
         //UDEBUG("before fork");
-        if (!interactive) {
+        if (0 && !interactive) {
             flag = 0;
             runcmd(buf);
             continue;

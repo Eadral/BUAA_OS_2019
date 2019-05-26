@@ -40,10 +40,13 @@ syscall_mem_alloc(u_int envid, u_int va, u_int perm)
 	return msyscall(SYS_mem_alloc, envid, va, perm, 0, 0);
 }
 
-int
+inline int
 syscall_mem_map(u_int srcid, u_int srcva, u_int dstid, u_int dstva, u_int perm)
 {
-	return msyscall(SYS_mem_map, srcid, srcva, dstid, dstva, perm);
+    //UDEBUG("before msyscall");
+    int ret = msyscall(SYS_mem_map, srcid, srcva, dstid, dstva, perm);
+    //UDEBUG("after msycall");
+    return ret;
 }
 
 int
