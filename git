@@ -1,6 +1,6 @@
 git add .
 rm fs/outputfile
-git commit -m "AUTO"
+git commit -m "$1"
 git push origin lab6
 touch fs/outputfile
 
