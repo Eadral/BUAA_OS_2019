@@ -297,13 +297,17 @@ umain(int argc, char **argv)
 		if (echocmds)
 			fwritef(1, "# %s\n", buf);
         //UDEBUG("before fork");
-        if (0 && !interactive) {
+        if (!interactive) {
+            /*
             flag = 0;
             runcmd(buf);
             continue;
+            */
+            syscall_set_trapframe(1, 1);
         }
 		if ((r = fork()) < 0)
 			user_panic("fork: %e", r);
+        syscall_set_trapframe(0, 1);
         //UDEBUG("after fork");
 		if (r == 0) {
             //UDEBUG("before runcmd");

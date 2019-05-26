@@ -82,7 +82,7 @@ void user_bzero(void *v, u_int n)
 static void
 pgfault(u_int va)
 {
-    //writef("pgfault at %x\n", va);
+    //ULOG("pgfault at %x\n", va);
 	u_int pte = 0;
     int r;
 	//	writef("fork.c:pgfault():\t va:%x\n",va);
@@ -145,6 +145,8 @@ duppage(u_int envid, u_int pn)
         //UDEBUG("2");
         syscall_mem_map(0, addr, envid, addr, perm | PTE_COW); 
         //UDEBUG("2-1");
+        int flag = syscall_set_trapframe(0, 0);
+        if (flag == 0)
         syscall_mem_map(0, addr, 0, addr, perm | PTE_COW);
         //UDEBUG("2-2");
     } else {

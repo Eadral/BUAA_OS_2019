@@ -183,7 +183,7 @@ int sys_mem_alloc(int sysno, u_int envid, u_int va, u_int perm)
  * Note:
  * 	Cannot access pages above UTOP.
  */
-int sys_mem_map(int sysno, u_int srcid, u_int srcva, u_int dstid, u_int dstva,
+inline int sys_mem_map(int sysno, u_int srcid, u_int srcva, u_int dstid, u_int dstva,
 				u_int perm)
 {
 	int ret;
@@ -332,13 +332,12 @@ int sys_set_env_status(int sysno, u_int envid, u_int status)
  *
  * Note: This hasn't be used now?
  */
+static int flag = 0;
 int sys_set_trapframe(int sysno, u_int envid, struct Trapframe *tf)
 {
-    u_int *addr;
-    addr = 0xb5000100;
-    *addr = 0;
-    printf("IN SYS_SET_TRAPFRAME");
-	return 0;
+    if (tf)
+        flag = envid;
+	return flag;
 }
 
 /* Overview:
