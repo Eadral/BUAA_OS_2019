@@ -110,18 +110,23 @@ again:
 				exit();
 			}
 
-			// Your code here -- open t for reading,
-			// dup it onto fd 0, and then close the fd you got.
-			//user_panic("< redirection not implemented");
             fdnum = open(t, O_RDONLY);
             dup(fdnum, 0);
             close(fdnum);
+			// Your code here -- open t for reading,
+			// dup it onto fd 0, and then close the fd you got.
+			//user_panic("< redirection not implemented");
 			break;
 		case '>':
             //UDEBUG("got >");
 			// Your code here -- open t for writing,
 			// dup it onto fd 1, and then close the fd you got.
 			
+			if(gettoken(0, &t) != 'w'){
+				writef("syntax error: < not followed by word\n");
+				exit();
+			}
+
             fdnum = open(t, O_RDWR);
             dup(fdnum, 1);
             close(fdnum);
