@@ -145,7 +145,7 @@ duppage(u_int envid, u_int pn)
         //UDEBUG("2");
         syscall_mem_map(0, addr, envid, addr, perm | PTE_COW); 
         //UDEBUG("2-1");
-        //syscall_mem_map(0, addr, 0, addr, perm | PTE_COW);
+        syscall_mem_map(0, addr, 0, addr, perm | PTE_COW);
         //UDEBUG("2-2");
     } else {
         //UDEBUG("3");
