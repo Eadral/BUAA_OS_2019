@@ -132,7 +132,7 @@ usr_load_elf(int fd , Elf32_Phdr *ph, int child_envid){
     for (; bin_size > BY2PG && i < bin_size-BY2PG; i+= BY2PG) {
         r = read_map(fd, off+i, &blk);
         UERR(r);
-        syscall_mem_map(0, blk, child_envid, va+i, PTE_R);
+        syscall_mem_map(0, blk, child_envid, va+i, PTE_V | PTE_R);
     }
 
     if (i < bin_size) {
@@ -144,13 +144,13 @@ usr_load_elf(int fd , Elf32_Phdr *ph, int child_envid){
             user_bzero((u_char*)blk + partial, BY2PG - partial);
         }
         UERR(r);
-        syscall_mem_map(0, blk, child_envid, va+i, PTE_R);
+        syscall_mem_map(0, blk, child_envid, va+i, PTE_V | PTE_R);
 
         i += BY2PG;
     }
 
     while (i < sgsize) {
-        syscall_mem_alloc(child_envid, va+i, PTE_R);
+        syscall_mem_alloc(child_envid, va+i, PTE_V | PTE_R);
         //ULOG("va: %x", va+i);
         i += BY2PG;
     }

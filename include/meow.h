@@ -18,6 +18,19 @@
         writef(". @%s:%d\n", __FILE__, __LINE__);  \
     } while(0)
 
+#define DEBUG(x)               \
+    do {                        \
+        printf("!!! %s. @%s:%d\n", (x), __FILE__, __LINE__);  \
+    } while(0)
+
+#define LOG(fmt, x)            \
+    do {                        \
+        printf("!!! ");         \
+        printf(fmt, x);         \
+        printf(". @%s:%d\n", __FILE__, __LINE__);  \
+    } while(0)
+
+
 #define STOP()                  \
     do {                        \
         printf("MEOW!");        \

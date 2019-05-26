@@ -153,7 +153,7 @@ int sys_mem_alloc(int sysno, u_int envid, u_int va, u_int perm)
     if (va >= UTOP) {
         panic("va > UTOP");
     }
-    if (perm & PTE_V == 0 || perm & PTE_COW) {
+    if ((perm & PTE_V) == 0 || (perm & PTE_COW)) {
         panic("sys_mem_alloc");
         return -E_INVAL;
     } 
@@ -198,7 +198,7 @@ int sys_mem_map(int sysno, u_int srcid, u_int srcva, u_int dstid, u_int dstva,
 	round_dstva = ROUNDDOWN(dstva, BY2PG);
 
     //your code here
-    if (perm & PTE_V == 0) {
+    if ((perm & PTE_V) == 0) {
         panic("sys_mem_map");
         return -E_INVAL;
     }

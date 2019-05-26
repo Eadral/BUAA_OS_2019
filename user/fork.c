@@ -88,7 +88,7 @@ pgfault(u_int va)
 	//	writef("fork.c:pgfault():\t va:%x\n",va);
     pte = (*vpt)[VPN(va)]; 
     u_int perm = pte & 0xFFF;
-    if (pte & PTE_COW == 0) {
+    if ((pte & PTE_COW) == 0) {
         user_panic("not a copy-on-write page");
     }
     //writef("%x %x\n", va,PTE_ADDR((*vpt)[VPN(va)]) );
